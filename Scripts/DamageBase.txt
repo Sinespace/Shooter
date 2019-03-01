@@ -1,0 +1,58 @@
+channel = channel or 'space.sine.fps'
+
+damage = damage or {}
+
+damage.stats = Space.Shared.GetGlobal(channel, 'stats')
+damage.damageModes = damageModes or 0
+damage.dead = false
+
+damage.init = function()
+    logger.log('damage control init')
+    damage.setup()
+    Space.Host.InvokeDelayed(damage.initDelayed, 0.5)
+    Space.Host.ExecutingObject.OnEnable(damage.setup)
+end
+
+damage.setup = function()
+    damage.damageModes = damageModes or 0
+    damage.dead = false
+end
+
+damage.initDelayed = function()
+    logger.log('damage control delay init')
+    damage.checkUpdateTitle()
+    -- collider must be on root, or the global id won't fit
+    local hitChannel
+    if Space.Host.ExecutingObject.Root.Avatar ~= nil then
+        hitChannel = channel .. '.' .. tostring(Space.Scene.PlayerAvatar.ID)
+    else
+        hitChannel = channel .. '.' .. Space.Host.ExecutingObject.Name
+    end
+    Space.Shared.RegisterFunction(hitChannel, 'hit', damage.takeHit)
+    Space.Shared.RegisterBroadcastFunction(channel, 'kill', damage.kill)
+    logger.log('damage initialized', hitChannel)
+end
+
+damage.takeHit = function(hitData)
+    logger.log('takeHit', hitData)
+    logger.log('meter', damage.meter)
+    if damage.meter.health > 0 then
+        damage.meter.health = damage.meter.health - hitData['damage']
+        damage.updateTitle()
+        if damage.meter.health <= 0 then
+            damage.meter.health = 0
+            damage.die(hitData)
+        else
+            damage.handleShooter(hitData)
+            if damage.damageModes > 0 then
+                damage.playDamageAction()
+            end
+        end
+    end
+end
+
+damage.handleShooter = function(hitData)
+end
+
+damage.kill = function(data)
+end

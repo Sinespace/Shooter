@@ -1,0 +1,133 @@
+channel = channel or 'space.sine.fps'
+
+koth = koth or {}
+koth.points = points or 1
+koth.pointInterval = pointInterval or 30
+koth.team = team or ''
+
+koth.diff = -1
+
+logger = logger or {}
+
+koth.sendServerMessage = function(command, data)
+    data.command = command
+    logger.log('koth.sendServerMessage', data)
+    if Space.InEditor then
+        Space.Shared.CallBroadcastFunction(channel, 'server', {data})
+    else
+        Space.Network.SendNetworkMessage(channel .. '.koth.' .. command, data, true)
+    end
+end
+
+koth.playerEnter = function(hit)
+    logger.log('koth.playerEnter', hit)
+    local data = {}
+    data.id = Space.Host.ExecutingObject.Root.GlobalID
+    data.avatarId = Space.Scene.PlayerAvatar.ID
+    koth.sendServerMessage('enter', data)
+end
+
+koth.playerExit = function(hit)
+    logger.log('koth.playerExit', hit)
+    local data = {}
+    data.id = Space.Host.ExecutingObject.Root.GlobalID
+    data.avatarId = Space.Scene.PlayerAvatar.ID
+    koth.sendServerMessage('leave', data)
+end
+
+koth.sendRegistration = function()
+    logger.log('koth.sendRegistration')
+    local registration = {}
+    registration.id = Space.Host.ExecutingObject.Root.GlobalID
+    registration.name = Space.Host.ExecutingObject.Root.Name
+    registration.points = koth.points
+    registration.pointInterval = koth.pointInterval
+    registration.team = koth.team
+    koth.sendServerMessage('register', registration)
+end
+
+koth.handleBroadcast = function(data)
+    -- logger.log('koth.handleBroadcast ', data)
+    if data.command == Space.Host.ExecutingObject.Root.GlobalID .. '.level' then
+        koth.diff = data.diff
+        koth.stamp = Space.Time
+        koth.counting = true
+        koth.updateGauge(data.gauge)
+    elseif data.command == Space.Host.ExecutingObject.Root.GlobalID .. '.reset' then
+        koth.diff = -1
+        koth.counting = false
+        koth.updateGauge(-1)
+    elseif data.command == 'reregister' then
+        koth.sendRegistration()
+    end
+end
+
+koth.level = function(arguments)
+    logger.log('koth.level', arguments)
+    local data = arguments.Message
+    koth.diff = data.diff
+    koth.stamp = Space.Time
+    koth.counting = true
+    koth.updateGauge(data.gauge)
+end
+
+koth.reset = function(arguments)
+    logger.log('koth.reset', arguments)
+    koth.counting = false
+    koth.updateGauge(0)
+end
+
+-- provide countdown value, normalized (0 to 1)
+koth.updateGauge = function(level)
+    if Space.Host.GetReference('animator') ~= nil then
+        if level < 0 then
+            level = 0
+        elseif level > 1 then
+            level = 1
+        end
+        Space.Host.GetReference('animator').Animator.SetFloat('level', level)
+    end
+end
+
+koth.updateGaugeAsync = function()
+    while true do
+        if koth.diff >= 0 and koth.counting then
+            local curr = (Space.Time - koth.stamp) + koth.diff
+            local gauge = 1 - (curr / koth.pointInterval)
+            koth.updateGauge(gauge)
+        elseif not koth.counting then
+            koth.updateGauge(0)
+        end
+        coroutine.yield(0)
+    end
+end
+
+koth.init = function()
+    if Space.InEditor then
+        Space.Shared.RegisterBroadcastFunction(channel, 'client', koth.handleBroadcast)
+    else
+        logger.log("koth.init")
+        Space.Network.SubscribeToNetwork(
+            channel .. '.koth.' .. Space.Host.ExecutingObject.Root.GlobalID .. '.level',
+            koth.level
+        )
+        Space.Network.SubscribeToNetwork(
+            channel .. '.koth.' .. Space.Host.ExecutingObject.Root.GlobalID .. '.reset',
+            koth.reset
+        )
+        Space.Network.SubscribeToNetwork(channel .. '.koth.reregister', koth.sendRegistration)
+    end
+    koth.sendRegistration()
+
+    Space.Host.StartCoroutine(koth.updateGaugeAsync, nil, 'koth.updateGaugeAsync')
+end
+
+function kothEnterPlayer()
+    koth.playerEnter('trigger activator player')
+end
+
+function kothExitPlayer()
+    koth.playerExit('trigger activator player')
+end
+
+koth.init()

@@ -1,0 +1,121 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications: []
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 1623527676282524}
+  m_IsPrefabParent: 1
+--- !u!1 &1623527676282524
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4552164086824980}
+  - component: {fileID: 114944461379034316}
+  - component: {fileID: 114924001070906416}
+  m_Layer: 0
+  m_Name: FPS Leaderboard Serverside
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4552164086824980
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1623527676282524}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 21.972542, y: 0.8889649, z: 0.18307722}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &114924001070906416
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1623527676282524}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5513f562b7975a542937afd116042bbe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AutoSetup: 1
+  Type: 14
+  CustomType: 
+  InworldCustomisation: 2
+  Description:
+    Language: 10
+    Name: FPS Leaderboard Serverside
+    Description: FPS Leaderboard Serverside
+    Brand: dotEnterprise
+    Instructions: 
+    ReleaseNotes: 
+  Localised: []
+  ItemStoreIcon: {fileID: 2800000, guid: 136e001254c925d4f8acb46843a36f22, type: 3}
+  StoreImage1: {fileID: 0}
+  StoreImage2: {fileID: 0}
+  StoreImage3: {fileID: 0}
+  StoreImage4: {fileID: 0}
+  StoreImage5: {fileID: 0}
+  ItemInventoryIcon: {fileID: 2800000, guid: 136e001254c925d4f8acb46843a36f22, type: 3}
+  BrandIcon: {fileID: 2800000, guid: e2384d489a1d1c6468b7ebb711c6bb16, type: 3}
+  YouTubeURL: 
+  HomepageURL: 
+  NotForSale: 1
+  PriceSilver: 0
+  PriceGold: 0
+  AllowUseInPromotions: 0
+  MaxDiscountInSales: 0
+  MaxOwned: 0
+  MaxCopiesPerItem: 0
+  DerivationID: 0
+  DerivationAllowed: 0
+  DerivationPack: 
+  Rating: 2
+  Category: Furniture/Game
+  CategoryCode: 53200
+  ItemTags: []
+  DeveloperName: Ulli Berthold
+  Copyright: "\xA92018 dotEnterprise / Ulli Berthold"
+  GridID: 0
+  ResumeID: 0
+  CopyrightContainsThirdParty: 0
+  CopyrightContainsThirdPartyLicensed: 0
+  CopyrightContainsThirdPartyFairUse: 0
+  TrademarksContainsThirdParty: 0
+  TrademarksContainsThirdPartyLicensed: 0
+  TrademarksContainsThirdPartyFairUse: 0
+  ModioTemplateID: 0
+  Flags:
+    ViolenceAndGore: 1
+    Alcohol: 0
+    HorrorThemes: 1
+    IllicitDrugReferences: 0
+    ExplicitOrAdultContent: 0
+  ID: 2121849
+--- !u!114 &114944461379034316
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1623527676282524}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c4ed85b2ace4d340871ea4dbc90602b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ClassID: space.sine.fps.board
+  Script: {fileID: 11400000, guid: 719c3599bc46e4b41b6d3314447cbcc6, type: 3}

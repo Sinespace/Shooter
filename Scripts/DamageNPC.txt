@@ -1,0 +1,107 @@
+channel = channel or 'space.sine.fps'
+
+damage = damage or {}
+logger = logger or {}
+
+npcFollower = npcFollower or {hidden = false}
+
+damage.playDamageAction = function()
+    local deathMode = Space.Math.RandomInteger(1, damage.damageModes)
+    Space.Host.InvokeEvent('damage')
+    damage.animator.SetInteger('DamageMode', deathMode)
+    damage.animator.SetTrigger('TakeDamage')
+end
+
+damage.die = function()
+    if damage.dead == false then
+        damage.dead = true
+        logger.log('busy dieing')
+        if Space.Host.ExecutingObject.NavMeshAgent.HasPath and Space.Host.ExecutingObject.NavMeshAgent.Enabled then
+            Space.Host.ExecutingObject.NavMeshAgent.Stop()
+            Space.Host.ExecutingObject.NavMeshAgent.Enabled = false
+        end
+        Space.Host.InvokeEvent('die')
+        damage.animator.SetTrigger('Death')
+        local deathMode = Space.Math.RandomInteger(1, damage.deathModes)
+        logger.log('playing death mode', deathMode)
+        damage.animator.SetInteger('Die', deathMode)
+        local kb = {}
+        kb.command = 'killbot'
+        kb.name = Space.Host.ExecutingObject.Name
+        kb.mode = deathMode
+        Space.Shared.CallBroadcastFunction(channel, 'killbot', {kb})
+    end
+end
+
+damage.kill = function(data)
+    if data.name == Space.Host.ExecutingObject.Name then
+        if damage.dead == false then
+            damage.dead = true
+            logger.log('busy dieing')
+            Space.Host.InvokeEvent('die')
+            damage.animator.SetTrigger('Death')
+            logger.log('playing death mode', data.mode)
+            damage.animator.SetInteger('Die', data.mode)
+        end
+    end
+end
+
+damage.checkUpdateTitle = function()
+    damage.updateTitle()
+end
+
+damage.updateTitle = function()
+    -- local text = Space.Host.GetReference('health')
+    -- text.UIText.Text = tostring(damage.meter.health)
+end
+
+damage.triggerSpawn = function()
+    Space.Host.InvokeEvent('spawn')
+end
+
+damage.npcSetup = function()
+    Space.Host.GetReference('healthParent').Active = false
+    damage.animator = Space.Host.GetReference('animator').Animator
+
+    local hitChannel
+    if Space.Host.ExecutingObject.Root.Avatar ~= nil then
+        hitChannel = channel .. '.' .. tostring(Space.Scene.PlayerAvatar.ID)
+    else
+        hitChannel = channel .. '.' .. Space.Host.ExecutingObject.Name
+    end
+    Space.Shared.RegisterFunction(hitChannel, 'hit', damage.takeHit)
+    Space.Shared.RegisterBroadcastFunction(channel, 'kill', damage.kill)
+
+    damage.meter = {}
+    damage.meter.health = startHealth or 50
+    damage.dead = false
+    damage.deathModes = deathModes or 1
+
+    damage.index = (damage.index or 0) + 1
+
+    Space.Host.StartCoroutine(damage.updateHud, nil, "DamageNPC updateHud")
+
+    Space.Host.InvokeDelayed(damage.triggerSpawn, 0.1)
+    logger.log('processed damage setup ', damage)
+end
+
+damage.updateHud = function()
+    -- local randomOffset = math.random() * 0.1
+    -- local hud = Space.Host.GetReference('healthParent')
+    -- while not npcFollower.hidden do
+    --     local offset = Space.Host.ExecutingObject.WorldPosition - Space.Camera.MainCamera.WorldPosition
+    --     if offset.Magnitude > 15 then
+    --         if hud.Active then
+    --             hud.Active = false
+    --         end
+    --     else
+    --         if not hud.Active then
+    --             hud.Active = true
+    --         end
+    --         -- local scale = (offset.Magnitude / 15) * 2 + 1
+    --         -- hud.LocalScale = Vector.New(scale, scale, scale)
+    --         hud.WorldRotation = Quaternion.LookRotation(offset)
+    --     end
+    --     coroutine.yield(0.3 + randomOffset)
+    -- end
+end

@@ -1,0 +1,92 @@
+channel = channel or 'space.sine.fps'
+
+poolManager = {}
+
+poolManager.poolSize = poolSize or 20
+poolManager.poolTtl = poolItemTtl or 2
+poolManager.typeIndex = {}
+poolManager.typePools = {}
+poolManager.showIndex = 1
+
+poolManager.poolBullet = function(type, position, bullet)
+    if bullet == nil and poolManager.typePools[type] == nil then
+        logger.log("no pool bullet object")
+        return
+    end
+    if poolManager.typePools[type] == nil then
+        poolManager.typePools[type] = {}
+        -- local bullet = Space.GetResource(type)
+        for i = 1, poolManager.poolSize, 1 do
+            local tmp = Space.Scene.CreateGameObject(bullet)
+            tmp.Active = false
+            local item = {}
+            item.bullet = tmp
+            item.ts = 0
+            poolManager.typePools[type][i] = item
+        end
+        poolManager.typeIndex[type] = 1
+    end
+
+    local item = poolManager.typePools[type][poolManager.typeIndex[type]]
+    item.bullet.WorldPosition = position
+    item.bullet.Active = true
+    item.bullet.ParticleSystem.Play(true)
+    item.ts = Space.Time + poolManager.poolTtl
+    poolManager.typeIndex[type] = poolManager.typeIndex[type] + 1
+    if poolManager.typeIndex[type] > poolManager.poolSize then
+        poolManager.typeIndex[type] = 1
+    end
+end
+
+poolManager.checkType = function(type, bullet)
+    if poolManager.typePools[type] == nil then
+        poolManager.typePools[type] = {}
+        -- local bullet = Space.GetResource(type)
+        for i = 1, poolManager.poolSize, 1 do
+            local tmp = Space.Scene.CreateGameObject(bullet)
+            tmp.Active = false
+            local item = {}
+            item.bullet = tmp
+            item.ts = 0
+            poolManager.typePools[type][i] = item
+        end
+        poolManager.typeIndex[type] = 1
+    end
+end
+
+poolManager.poolManager = function()
+    while true do
+        for type, pool in pairs(poolManager.typePools) do
+            for i = 1, poolManager.poolSize, 1 do
+                local item = pool[i]
+                if item.ts < Space.Time and item.bullet.Active then
+                    item.bullet.ParticleSystem.Stop(true)
+                    item.bullet.Active = false
+                end
+            end
+        end
+        coroutine.yield(1)
+    end
+end
+
+poolManager.handleMessage = function(data)
+    if data['command'] == 'bullet' then
+        poolManager.poolBullet(data['type'], data['position'], data['bullet'])
+    elseif data['command'] == 'check' then
+        poolManager.checkType(data['type'], data['bullet'])
+    end
+end
+
+poolManager.onNetworkRecieve = function(arguments)
+    local data = arguments.Message
+    poolManager.handleMessage(data)
+end
+
+poolManager.init = function()
+    Space.Host.StartCoroutine(poolManager.poolManager, nil, "BulletPoolManager poolManager")
+    Space.Shared.RegisterBroadcastFunction(channel, 'rezBullet', poolManager.handleMessage)
+    Space.Network.SubscribeToNetwork(channel .. '.rezBullet', poolManager.onNetworkRecieve)
+    Space.Shared.CallBroadcastFunction(channel, "queryBullets", {})
+end
+
+poolManager.init()

@@ -1,0 +1,374 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications: []
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 1084355060370688}
+  m_IsPrefabParent: 1
+--- !u!1 &1075881786778796
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4195472894685380}
+  - component: {fileID: 33809692765519592}
+  - component: {fileID: 23326409629218562}
+  m_Layer: 0
+  m_Name: Shotgun
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &1084355060370688
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4290822696812000}
+  - component: {fileID: 114974631973325056}
+  - component: {fileID: 114999588072088632}
+  - component: {fileID: 65390787389111894}
+  m_Layer: 0
+  m_Name: FPS Gun Giver Type 2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &1899002744254968
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4846116679405284}
+  - component: {fileID: 114043673395623970}
+  - component: {fileID: 136023896488387180}
+  - component: {fileID: 114516017619507564}
+  m_Layer: 2
+  m_Name: GunGiver
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4195472894685380
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1075881786778796}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.651, z: 0}
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
+  m_Children: []
+  m_Father: {fileID: 4290822696812000}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &4290822696812000
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1084355060370688}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 28.88674, y: 0, z: -2.4925745}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 4195472894685380}
+  - {fileID: 4846116679405284}
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &4846116679405284
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1899002744254968}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4290822696812000}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!23 &23326409629218562
+MeshRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1075881786778796}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_Materials:
+  - {fileID: -1768215496, guid: 68204dcf60608a84c80cc260ea9ab603, type: 3}
+  - {fileID: -1583799643, guid: 68204dcf60608a84c80cc260ea9ab603, type: 3}
+  - {fileID: -1844372324, guid: 68204dcf60608a84c80cc260ea9ab603, type: 3}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 0
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+--- !u!33 &33809692765519592
+MeshFilter:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1075881786778796}
+  m_Mesh: {fileID: 4300000, guid: e9ef90b69130beb4c96ccf21235445ea, type: 3}
+--- !u!65 &65390787389111894
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1084355060370688}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0.5, z: 0}
+--- !u!114 &114043673395623970
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1899002744254968}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b37c65c4f04796841a3b04c8e7b38536, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ComponentName: 
+  ScriptContents: 
+  Script: {fileID: 0}
+  PublicVariables:
+  - Type: 0
+    Name: gunType
+    FloatVal: 0
+    IntVal: 0
+    StringVal: gun two
+    ObjectRef: {fileID: 0}
+  - Type: 0
+    Name: bulletType
+    FloatVal: 0
+    IntVal: 0
+    StringVal: bullet two
+    ObjectRef: {fileID: 0}
+  - Type: 2
+    Name: bullets
+    FloatVal: 0
+    IntVal: 20
+    StringVal: 
+    ObjectRef: {fileID: 0}
+  - Type: 2
+    Name: bulletInterval
+    FloatVal: 0
+    IntVal: 20
+    StringVal: 
+    ObjectRef: {fileID: 0}
+  - Type: 2
+    Name: order
+    FloatVal: 0
+    IntVal: 2
+    StringVal: space.sine.fps
+    ObjectRef: {fileID: 0}
+  - Type: 0
+    Name: channel
+    FloatVal: 0
+    IntVal: 0
+    StringVal: space.sine.fps
+    ObjectRef: {fileID: 0}
+  PublicVariablesLocked: 0
+  ScriptFile: {fileID: 0}
+  ScriptLibraries:
+  - {fileID: 4900000, guid: 4115802efaf2efc4e81c9a46496ee609, type: 3}
+  - {fileID: 4900000, guid: 1ab06df9a2349e5459db2f6a80b2eebd, type: 3}
+  - {fileID: 4900000, guid: b3285032ab4e1cf4481947119dbd50eb, type: 3}
+  DefaultEvents: 1
+  AllowRuntimeScriptEditing: 0
+  Debugger: 0
+  AwaitDebugger: 0
+  WaitForPlayer: 1
+  WaitForNetwork: 0
+  MaxScriptExecutionsPerTick: 5000
+  Index: 1
+  LoadLibrariesSequentially: 1
+  Resources:
+  - Name: gun
+    Object: {fileID: 1185037072891632, guid: 52a0e4799e2f89a418ed95eecdcc68ca, type: 2}
+  - Name: gunRemote
+    Object: {fileID: 1119984166874890, guid: 4228ab3d111d5d448b17321b7642cf72, type: 2}
+  - Name: gunMouselook
+    Object: {fileID: 1185037072891632, guid: 4b3ab16d0b0537c4ea9278ff597b6311, type: 2}
+  - Name: bullet
+    Object: {fileID: 1561081240351922, guid: 3bf22a55a0feeca4091c5dcdcf46aa2c, type: 2}
+  - Name: animator3rd
+    Object: {fileID: 9100000, guid: 0009a55d551d79f42919d629d9dd5a77, type: 2}
+  - Name: icon
+    Object: {fileID: 2800000, guid: c98e10845e500ff45bc98a2dc4bd92ce, type: 3}
+  Events: []
+  ObjectReferences: []
+--- !u!114 &114516017619507564
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1899002744254968}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec3e6674dbd52b249953e90265e7d168, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OwnerOnly: 1
+  ExcludeOwner: 0
+  Enter:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 114043673395623970}
+        m_MethodName: CallScriptFunction
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: giveGun
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  Exit:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+--- !u!114 &114974631973325056
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1084355060370688}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5513f562b7975a542937afd116042bbe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AutoSetup: 1
+  Type: 4
+  CustomType: 
+  InworldCustomisation: 2
+  Description:
+    Language: 10
+    Name: FPS Gun Giver Type 2
+    Description: FPS Gun Giver Type 2
+    Brand: dotEnterprise
+    Instructions: 
+    ReleaseNotes: 
+  Localised: []
+  ItemStoreIcon: {fileID: 2800000, guid: c98e10845e500ff45bc98a2dc4bd92ce, type: 3}
+  StoreImage1: {fileID: 0}
+  StoreImage2: {fileID: 0}
+  StoreImage3: {fileID: 0}
+  StoreImage4: {fileID: 0}
+  StoreImage5: {fileID: 0}
+  ItemInventoryIcon: {fileID: 2800000, guid: c98e10845e500ff45bc98a2dc4bd92ce, type: 3}
+  BrandIcon: {fileID: 2800000, guid: e2384d489a1d1c6468b7ebb711c6bb16, type: 3}
+  YouTubeURL: 
+  HomepageURL: 
+  NotForSale: 1
+  PriceSilver: 0
+  PriceGold: 0
+  AllowUseInPromotions: 0
+  MaxDiscountInSales: 0
+  MaxOwned: 0
+  MaxCopiesPerItem: 0
+  DerivationID: 0
+  DerivationAllowed: 0
+  DerivationPack: 
+  Rating: 2
+  Category: Furniture/Others
+  CategoryCode: 59900
+  ItemTags: []
+  DeveloperName: Ulli Berthold
+  Copyright: "\xA92018 dotEnterprise / Ulli Berthold"
+  GridID: 0
+  ResumeID: 0
+  CopyrightContainsThirdParty: 0
+  CopyrightContainsThirdPartyLicensed: 0
+  CopyrightContainsThirdPartyFairUse: 0
+  TrademarksContainsThirdParty: 0
+  TrademarksContainsThirdPartyLicensed: 0
+  TrademarksContainsThirdPartyFairUse: 0
+  ModioTemplateID: 0
+  Flags:
+    ViolenceAndGore: 1
+    Alcohol: 0
+    HorrorThemes: 1
+    IllicitDrugReferences: 0
+    ExplicitOrAdultContent: 0
+  ID: 2120622
+--- !u!114 &114999588072088632
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1084355060370688}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f03ff7a9adf4e84783f422be806ab5f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PlaceOnFloor: 1
+  PlaceOnWalls: 0
+  PlaceOnCeiling: 0
+  OnlyEnableColliderDuringEditing: 1
+  MainCollider: {fileID: 65390787389111894}
+  AllowScale: 0
+  IconPosition: {fileID: 0}
+  RendererToUseForPatterns: {fileID: 0}
+--- !u!136 &136023896488387180
+CapsuleCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1899002744254968}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  m_Radius: 1
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 1, z: 0}

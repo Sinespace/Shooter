@@ -1,0 +1,35 @@
+channel = channel or 'space.sine.fps'
+
+bulletCrate = {}
+bulletCrate.bullets = bullets or 50
+bulletCrate.interval = bulletInterval or 10
+bulletCrate.bulletType = bulletType or "default"
+bulletCrate.next = 0
+
+logger = logger or {}
+
+bulletCrate.tryGive = function(playAnim)
+    logger.log('trying to give bullets, checking time')
+    if bulletCrate.next < Space.Time then
+        bulletCrate.give(playAnim)
+    end
+end
+
+bulletCrate.give = function(playAnim)
+    Space.Host.StartCoroutine(bulletCrate.doGive, playAnim, "BulletCrate give")
+end
+
+bulletCrate.doGive = function(playAnim)
+    logger.log('Giving bullets')
+    bulletCrate.next = Space.Time + bulletCrate.interval
+    local data = {}
+    data.bullets = bulletCrate.bullets
+    data.bulletType = bulletCrate.bulletType
+    data.playAnimation = playAnim or true
+    Space.Shared.CallFunction(channel, 'giveBullets', {data})
+end
+
+function bulletCrateTryGive()
+    logger.log("bulletCrate data", bulletCrate)
+    bulletCrate.tryGive()
+end

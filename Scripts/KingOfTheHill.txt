@@ -1,0 +1,165 @@
+channel = channel or 'space.sine.fps'
+
+koth = koth or {}
+koth.points = points or 1
+koth.pointInterval = pointInterval or 30
+koth.team = team or ''
+
+koth.inside = 0
+koth.playerInside = false
+
+koth.mode = 'free'
+koth.lastMode = ''
+koth.nextTick = 0
+koth.lastLevel = 1
+
+logger = logger or {}
+
+koth.sendServerMessage = function(channel, data)
+    if Space.InEditor then
+        Space.Shared.CallBroadcastFunction(channel, 'server', {data})
+    else
+        Space.Network.SendNetworkMessage(channel .. '.koth', data, true)
+    end
+end
+
+koth.playerEnter = function(hit)
+    koth.playerInside = true
+    koth.nextTick = Space.Time + koth.pointInterval
+    koth.enter(hit)
+end
+
+koth.enter = function(hit)
+    logger.log('got enter', hit)
+    koth.inside = koth.inside + 1
+
+    if koth.inside > 0 then
+        koth.mode = 'taken'
+    else
+        koth.mode = 'free'
+    end
+end
+
+koth.playerExit = function(hit)
+    koth.playerInside = false
+    koth.exit(hit)
+end
+
+koth.exit = function(hit)
+    logger.log('got exit', hit)
+    koth.inside = koth.inside - 1
+    if koth.inside < 1 then
+        koth.inside = 0
+    end
+
+    if koth.inside > 0 then
+        koth.mode = 'taken'
+    else
+        koth.mode = 'free'
+    end
+end
+
+koth.levelUpdate = function(arguments)
+    logger.log('koth.levelUpdate', arguments)
+    local data = arguments.Message
+    koth.updateGauge(data.level, true)
+end
+
+-- provide countdown value, normalized (0 to 1)
+koth.updateGauge = function(level, isRemote)
+    if Space.Host.GetReference('animator') ~= nil then
+        if level < 0 then
+            level = 0
+        elseif level > 1 then
+            level = 1
+        end
+        Space.Host.GetReference('animator').Animator.SetFloat('level', level)
+    end
+    if level ~= koth.lastLevel then
+        koth.lastLevel = level
+        if not isRemote then
+            local data = {}
+            data.level = level
+            Space.Network.SendNetworkMessage(
+                channel .. '.koth.' .. Space.Host.ExecutingObject.GlobalID .. '.level',
+                data
+            )
+        end
+    end
+end
+
+koth.onUpdate = function()
+    while true do
+        if koth.mode ~= koth.lastMode then
+            koth.lastMode = koth.mode
+            Space.Host.InvokeEvent(koth.mode)
+        end
+        if koth.playerInside and koth.inside == 1 then
+            if koth.nextTick <= Space.Time then
+                koth.nextTick = Space.Time + koth.pointInterval
+                logger.log('try adding point')
+                local data = {}
+                data.command = 'addKotHPoint'
+                data.source = Space.Host.ExecutingObject.Root.Name
+                data.points = koth.points
+                data.player = Space.Scene.PlayerAvatar.ID
+                data.interval = koth.pointInterval
+                logger.log('sending point test to server')
+                koth.sendServerMessage(channel, data)
+            end
+        elseif koth.inside > 1 or not koth.playerInside then
+            koth.nextTick = Space.Time + koth.pointInterval
+        end
+        if koth.playerInside then
+            if koth.inside == 1 then
+                local level = (koth.nextTick - Space.Time) / koth.pointInterval
+                koth.updateGauge(level, false)
+            -- else
+            --     koth.updateGauge(1, false)
+            end
+        -- else
+        --     koth.updateGauge(1, false)
+        end
+        coroutine.yield(0.2)
+    end
+end
+
+koth.init = function()
+    Space.Host.StartCoroutine(koth.onUpdate)
+    Space.Host.ExecutingObject.SubscribeToEvents()
+    Space.Host.ExecutingObject.OnCollisionEnter(koth.enter)
+    Space.Host.ExecutingObject.OnCollisionExit(koth.exit)
+
+    Space.Network.SubscribeToNetwork(
+        channel .. '.koth.' .. Space.Host.ExecutingObject.GlobalID .. '.level',
+        koth.levelUpdate
+    )
+end
+
+function kothEnterPlayer()
+    koth.playerEnter('trigger activator player')
+end
+
+function kothExitPlayer()
+    koth.playerExit('trigger activator player')
+end
+
+function kothEnterOther()
+    koth.enter('trigger activator other')
+end
+
+function kothExitOther()
+    koth.exit('trigger activator other')
+end
+
+function OnCollisionEnter(hit)
+    logger.log('implicit enter')
+    koth.enter(hit)
+end
+
+function OnCollisionExit(hit)
+    logger.log('implicit exit')
+    koth.exit(hit)
+end
+
+koth.init()

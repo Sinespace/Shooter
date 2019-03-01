@@ -1,0 +1,15 @@
+channel = "space.sine.fps"
+
+function update()
+    Space.Log(string.format('%09.4f', Space.Time) .. " Global log: enable " .. tostring(Space.Host.GetReference("enable").UIToggle.IsOn))
+    Space.Log(string.format('%09.4f', Space.Time) .. " Global log: force " .. tostring(Space.Host.GetReference("force").UIToggle.IsOn))
+    Space.Shared.SetGlobal(channel, 'enableLogging', Space.Host.GetReference("enable").UIToggle.IsOn)
+    if Space.Host.GetReference("enable").UIToggle.IsOn then
+        Space.Host.InvokeEvent("show")
+    else
+        Space.Host.InvokeEvent("hide")
+    end
+    Space.Shared.SetGlobal(channel, 'forceLogging', Space.Host.GetReference("force").UIToggle.IsOn)
+end
+
+update()

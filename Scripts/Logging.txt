@@ -1,0 +1,44 @@
+logger = {enabled = false}
+logger.channel = 'space.sine.fps'
+
+logger.log = function(logEntry, data, force)
+    if Space.Shared.GetGlobal(logger.channel, 'enableLogging') then
+        globalEnabled = true
+    else
+        return
+    end
+    if Space.Shared.GetGlobal(logger.channel, 'forceLogging') then
+        force = true
+    else
+        force = force or false
+    end
+    if (logger.enabled or force) and globalEnabled then
+        local payload = ''
+        if data ~= nil then
+            if type(data) == 'table' then
+                payload = ' - (table) length: ' .. tostring(#data) .. ' - values: ' .. json.serialize(data)
+            else
+                payload = ' - ' .. tostring(data)
+            end
+        end
+        if Space.Host.ExecutingObject.Root.Name ~= Space.Host.ExecutingObject.Name then
+            Space.Log(
+                string.format('%09.4f', Space.Time) ..
+                    ' - ' ..
+                        Space.Scene.PlayerAvatar.Username ..
+                            ' - ' ..
+                                Space.Host.ExecutingObject.Root.Name ..
+                                    ' - ' .. Space.Host.ExecutingObject.Name .. ' - ' .. logEntry .. payload,
+                force
+            )
+        else
+            Space.Log(
+                string.format('%09.4f', Space.LocalTimeUnix) ..
+                    ' - ' ..
+                        Space.Scene.PlayerAvatar.Username ..
+                            ' - ' .. Space.Host.ExecutingObject.Name .. ' - ' .. logEntry .. payload,
+                force
+            )
+        end
+    end
+end

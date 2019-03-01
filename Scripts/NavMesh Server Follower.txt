@@ -1,0 +1,166 @@
+channel = channel or 'space.sine.fps'
+
+npcFollower = {}
+npcFollower.attackModes = 4
+npcFollower.attackRange = 2
+
+npcFollower.target = nil
+npcFollower.nextCheck = 0.0
+npcFollower.intervalNoTarget = 5
+npcFollower.intervalTarget = 0.25
+npcFollower.maxDistance = 20.0
+npcFollower.lookHeight = 1.5
+npcFollower.attackModes = 1
+npcFollower.attackRange = 2
+npcFollower.attackSpeed = 4
+npcFollower.wanderSpeed = 2
+
+npcFollower.currentAttack = -1
+npcFollower.following = false
+
+logger = logger or {}
+damage = damage or {}
+Vector = Vector or {}
+
+npcFollower.targetPos = nil
+
+npcFollower.follow = function()
+    if damage.dead then
+        if Space.Host.ExecutingObject.NavMeshAgent.HasPath then
+            Space.Host.ExecutingObject.NavMeshAgent.Stop()
+        end
+    end
+end
+
+npcFollower.setTargetPosition = function(targetPos, currentPos)
+    -- logger.log('setting target position', position)
+    if not Space.Host.ExecutingObject.NavMeshAgent.Enabled then
+        Space.Host.ExecutingObject.NavMeshAgent.Enabled = true+
+        coroutine.yield(0)
+    end
+
+    Space.Host.ExecutingObject.WorldPosition = currentPos
+    if Space.Host.ExecutingObject.NavMeshAgent.IsOnNavMesh then
+        Space.Host.ExecutingObject.NavMeshAgent.SetDestination(targetPos)
+    end
+    npcFollower.targetPos = targetPos
+end
+
+npcFollower.handleMessage = function(data)
+    -- logger.log('setting target', data)
+    if data['command'] == 'setTarget' then
+        local targetPos = data['targetpos']
+        npcFollower.targetAvatar = data.avatar
+        npcFollower.avatarPos = data.avatarPos
+        npcFollower.setTargetPosition(targetPos, data['currentPos'])
+    elseif data['command'] == 'die' then
+        Space.Host.ExecutingObject.Enabled = false
+    end
+end
+
+npcFollower.onRecieve = function(arguments)
+    local data = arguments.Message
+    npcFollower.handleMessage(data)
+end
+
+npcFollower.UpdateSpeed = function()
+    while true do
+        if not damage.dead then
+            -- logger.log("npcFollower.UpdateSpeed ", npcFollower, true)
+            local animator = Space.Host.GetReference('animator').Animator
+            local agent = Space.Host.ExecutingObject.NavMeshAgent
+            if npcFollower.targetAvatar ~= nil then
+                -- logger.log('checking target distance and speed')
+                agent.Speed = npcFollower.attackSpeed
+                if npcFollower.targetAvatar ~= nil then
+                    npcFollower.checkAttack(Space.Host.ExecutingObject.WorldPosition, npcFollower.avatarPos)
+                end
+            else
+                agent.Speed = npcFollower.wanderSpeed
+                Space.Host.GetReference('animator').Animator.SetBool('Attacking', false)
+            end
+            animator.SetFloat('Speed', agent.Velocity.Magnitude / agent.Speed)
+        end
+        coroutine.yield(0.5)
+    end
+end
+
+npcFollower.checkAttack = function(posSelf, posTarget)
+    if npcFollower.currentAttack < 1 then
+        if posSelf.Distance(posTarget) <= npcFollower.attackRange * 1.1 then
+            logger.log('Starting attack mode!')
+            Space.Host.InvokeEvent('attack')
+            npcFollower.currentAttack = Space.Math.RandomInteger(1, npcFollower.attackModes)
+            logger.log('attack mode', npcFollower.currentAttack)
+            Space.Host.GetReference('animator').Animator.SetBool('Attacking', true)
+            Space.Host.GetReference('animator').Animator.SetInteger('Attack', npcFollower.currentAttack)
+        end
+    else
+        if posSelf.Distance(posTarget) > npcFollower.attackRange * 1.1 then
+            logger.log('Out of attack reach, ending attack mode')
+            npcFollower.currentAttack = -1
+            Space.Host.InvokeEvent('attackend')
+            Space.Host.GetReference('animator').Animator.SetBool('Attacking', false)
+        end
+    end
+end
+
+damage.handleShooter = function(hitData)
+    -- logger.log('handling shooter data', hitData)
+    -- if npcFollower.target == nil then
+    --     npcFollower.nextCheck = Space.Time + npcFollower.intervalNoTarget
+    --     npcFollower.setTargetPosition(hitData['shooterposition'])
+    -- end
+end
+
+npcFollower.init = function()
+    -- Space.Host.ExecutingObject.OnUpdate(npcFollower.onUpdate)
+    -- Space.Host.StartCoroutine(npcFollower.UpdateSpeed)
+
+    if Space.InEditor then
+        Space.Shared.RegisterBroadcastFunction(
+            channel .. '.' .. Space.Host.ExecutingObject.Root.Name,
+            'server',
+            npcFollower.handleMessage
+        )
+    else
+        Space.Network.SubscribeToNetwork(channel .. '.' .. Space.Host.ExecutingObject.Root.Name, npcFollower.onRecieve)
+    end
+
+    npcFollower.hidden = true
+    Space.Host.InvokeEvent('hide')
+
+    -- npcFollower.register()
+end
+
+npcFollower.enableNavmesh = function()
+    Space.Host.ExecutingObject.NavMeshAgent.Enabled = true
+    npcFollower.hidden = false
+end
+
+npcFollower.setup = function()
+    -- logger.log('processing npc follower setup')
+    npcFollower.target = nil
+    npcFollower.nextCheck = 0.0
+    npcFollower.currentAttack = -1
+    npcFollower.following = false
+    damage.dead = false
+    -- Space.Host.InvokeDelayed(npcFollower.enableNavmesh, 0.1)
+    -- local animator = Space.Host.GetReference('animator').Animator
+    -- backup = animator.Controller;
+    -- animator.Controller = nil;
+    -- animator.Controller = backup;
+
+    if Space.Host.GetReference('animator').Animator ~= nil then
+        Space.Host.GetReference('animator').Animator.SetBool('Attacking', false)
+    end
+    -- logger.log('processed npc follower setup ', npcFollower)
+    -- logger.log('processed npc follower setup damage', damage)
+
+    Space.Host.StartCoroutine(npcFollower.follow, nil, 'npcFollower follow')
+    Space.Host.StartCoroutine(npcFollower.UpdateSpeed, nil, 'npcFollower UpdateSpeed')
+end
+
+logger.enabled = true
+-- npcFollower.setup()
+npcFollower.init()

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 377.09 377.09" xmlns="http://www.w3.org/2000/svg">
+ <g fill="none" stroke="#c10100">
+  <path d="m369.14 188.54a180.6 180.6 0 1 1 -361.19 0 180.6 180.6 0 1 1 361.19 0z" stroke-linecap="square" stroke-linejoin="round" stroke-width="22"/>
+  <g fill-rule="evenodd">
+   <path d="m7.9463 188.54h361.19" stroke-width="9.391"/>
+   <g stroke-width="21.672">
+    <path d="m10.836 188.54h32.281"/>
+    <path d="m333.97 188.54h32.281"/>
+   </g>
+   <g stroke-width="9.391">
+    <path d="m65.594 199.38v-21.672"/>
+    <path d="m106.58 199.38v-21.672"/>
+    <path d="m147.56 199.38v-21.672"/>
+    <path d="m229.53 199.38v-21.672"/>
+    <path d="m270.51 199.38v-21.672"/>
+    <path d="m311.49 199.38v-21.672"/>
+    <path d="m188.54 199.38v-21.672"/>
+    <path d="m188.54 7.9463v361.19"/>
+   </g>
+   <g stroke-width="21.672">
+    <path d="m188.54 10.836v32.281"/>
+    <path d="m188.54 333.97v32.281"/>
+   </g>
+   <g stroke-width="9.391">
+    <path d="m177.71 65.594h21.672"/>
+    <path d="m177.71 106.58h21.672"/>
+    <path d="m177.71 147.56h21.672"/>
+    <path d="m177.71 229.53h21.672"/>
+    <path d="m177.71 270.51h21.672"/>
+    <path d="m177.71 311.49h21.672"/>
+    <path d="m177.71 188.54h21.672"/>
+   </g>
+  </g>
+ </g>
+</svg>

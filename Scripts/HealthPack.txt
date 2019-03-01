@@ -1,0 +1,26 @@
+HealthPack = {}
+HealthPack.channel = 'space.sine.fps'
+HealthPack.HP = 20
+if HP ~= nil then
+    HealthPack.HP = HP
+end
+HealthPack.interval = 10
+if HPInterval ~= nil then
+    HealthPack.interval = HPInterval
+end
+
+HealthPack.last = 0
+
+HealthPack.tryGive = function()
+    logger.log('trying to give HP, checking time')
+    if Space.Time > HealthPack.last + HealthPack.interval then
+        HealthPack.give()
+    end
+end
+
+HealthPack.give = function()
+    logger.log('Giving HP')
+    HealthPack.last = Space.Time
+
+    Space.Shared.CallFunction(HealthPack.channel, 'giveHP', {HealthPack.HP})
+end

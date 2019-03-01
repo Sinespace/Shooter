@@ -1,0 +1,154 @@
+channel = channel or 'space.sine.fps'
+
+leaderboard = leaderboard or {}
+
+leaderboard.settings = {}
+leaderboard.settings.minPlayers = 0
+leaderboard.settings.maxPoints = 2
+leaderboard.settings.maxMinutes = 5
+
+logger = logger or {}
+
+leaderboard.showSettings = function()
+    logger.log('leaderboard.showSettings', leaderboard.settings)
+
+    Space.Host.GetReference('minPlayers').UIInputField.Text = tostring(leaderboard.settings.minPlayers)
+    Space.Host.GetReference('maxPoints').UIInputField.Text = tostring(leaderboard.settings.maxPoints)
+    Space.Host.GetReference('maxMinutes').UIInputField.Text = tostring(leaderboard.settings.maxMinutes)
+
+    Space.Host.InvokeEvent('showSettings')
+end
+
+leaderboard.saveSettings = function()
+    logger.log('leaderboard.saveSettings before', leaderboard.settings)
+
+    leaderboard.settings.minPlayers = tonumber(Space.Host.GetReference('minPlayers').UIInputField.Text)
+    leaderboard.settings.maxPoints = tonumber(Space.Host.GetReference('maxPoints').UIInputField.Text)
+    leaderboard.settings.maxMinutes = tonumber(Space.Host.GetReference('maxMinutes').UIInputField.Text)
+
+    leaderboard.updateServerSettings()
+    logger.log('leaderboard.saveSettings after', leaderboard.settings)
+end
+
+leaderboard.updateServerSettings = function()
+    local data = {}
+    data.command = 'saveSettings'
+    data.settings = leaderboard.settings
+    if Space.InEditor then
+        Space.Shared.CallBroadcastFunction(channel, 'board', {data})
+    else
+        Space.Network.SendNetworkMessage(channel .. '.board.saveSettings', data, true)
+    end
+end
+
+leaderboard.startRound = function()
+    logger.log('leaderboard.startRound')
+    local data = {}
+    data.command = 'startRound'
+    if Space.InEditor then
+        Space.Shared.CallBroadcastFunction(channel, 'board', {data})
+    else
+        Space.Network.SendNetworkMessage(channel .. '.board.startRound', data, true)
+    end
+end
+
+leaderboard.handleBroadcast = function(data)
+    if data.command == 'updateBoard' then
+        logger.log('leaderboard.handleBroadcast', data)
+        leaderboard.update(data)
+    elseif data.command == 'startRound' then
+        logger.log('leaderboard.handleBroadcast', data)
+        Space.Host.InvokeEvent('startRound')
+        Space.Shared.CallFunction(channel, 'startRound', {data})
+    elseif data.command == 'endRound' then
+        logger.log('leaderboard.handleBroadcast', data)
+        Space.Host.InvokeEvent('endRound')
+        Space.Shared.CallFunction(channel, 'endRound', {data})
+    end
+end
+
+leaderboard.handleNetworkStartRound = function(arguments)
+    logger.log('leaderboard.handleNetworkStartRound', arguments)
+    Space.Host.InvokeEvent('startRound')
+    Space.Shared.CallFunction(channel, 'startRound', {arguments.Message})
+end
+
+leaderboard.handleNetworkEndRound = function(arguments)
+    logger.log('leaderboard.handleNetworkEndRound', arguments)
+    Space.Host.InvokeEvent('endRound')
+    Space.Shared.CallFunction(channel, 'endRound', {arguments.Message})
+end
+
+leaderboard.handleNetworkUpdate = function(arguments)
+    logger.log('leaderboard.handleNetworkUpdate', arguments)
+    local data = arguments.Message
+    leaderboard.update(data)
+end
+
+leaderboard.update = function(data)
+    logger.log('leaderboard.update', data)
+    local names = ''
+    local points = ''
+    local kills = ''
+    local avatarKills = ''
+    local deaths = ''
+    local ratio = ''
+    for i = 1, #data.ranking, 1 do
+        if i > 1 then
+            names = names .. '\n'
+            points = points .. '\n'
+            kills = kills .. '\n'
+            avatarKills = avatarKills .. '\n'
+            deaths = deaths .. '\n'
+            ratio = ratio .. '\n'
+        end
+        names = names .. data.ranking[i].name
+        points = points .. data.ranking[i].points
+        kills = kills .. data.ranking[i].kills
+        avatarKills = avatarKills .. data.ranking[i].avatarKills
+        deaths = deaths .. data.ranking[i].deaths
+        if tonumber(data.ranking[i].deaths) > 0 then
+            ratio =
+                ratio ..
+                string.format('%02.3f', (tonumber(data.ranking[i].avatarKills) / tonumber(data.ranking[i].deaths)))
+        else
+            ratio = ratio .. string.format('%02.3f', (tonumber(data.ranking[i].avatarKills)))
+        end
+    end
+    Space.Host.GetReference('names').UIText.Text = names
+    Space.Host.GetReference('points').UIText.Text = points
+    Space.Host.GetReference('kills').UIText.Text = kills
+    Space.Host.GetReference('avatarKills').UIText.Text = avatarKills
+    Space.Host.GetReference('deaths').UIText.Text = deaths
+    Space.Host.GetReference('ratio').UIText.Text = ratio
+end
+
+leaderboard.init = function()
+    if Space.InEditor then
+        Space.Shared.RegisterBroadcastFunction(channel, 'client', leaderboard.handleBroadcast)
+        Space.Host.InvokeEvent('showSettingsButton')
+    else
+        Space.Network.SubscribeToNetwork(channel .. '.board.updateBoard', leaderboard.handleNetworkUpdate)
+        Space.Network.SubscribeToNetwork(channel .. '.board.startRound', leaderboard.handleNetworkStartRound)
+        Space.Network.SubscribeToNetwork(channel .. '.board.endRound', leaderboard.handleNetworkEndRound)
+        if Space.Scene.PlayerIsOwner then
+            Space.Host.InvokeEvent('showSettingsButton')
+        end
+    end
+
+    leaderboard.updateServerSettings()
+end
+
+function showSettings()
+    leaderboard.showSettings()
+end
+
+function saveSettings()
+    leaderboard.saveSettings()
+end
+
+function startRound()
+    leaderboard.startRound()
+end
+
+leaderboard.init()

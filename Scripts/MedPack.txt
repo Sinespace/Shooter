@@ -1,0 +1,30 @@
+channel = channel or 'space.sine.fps'
+
+medpack = {}
+medpack.health = health or 10
+medpack.interval = interval or 30
+
+medpack.next = 0
+
+medpack.addHealth = function()
+    if medpack.next < Space.Time then
+        medpack.next = Space.Time + medpack.interval
+        local stats = Space.Shared.GetGlobal(channel, "stats")
+        logger.log("medpack before", stats)
+        if stats.health < stats.maxHealth then
+            logger.log("current health", stats.health)
+            stats.health = stats.health + medpack.health
+            logger.log("updated  health", stats.health)
+            if stats.health > stats.maxHealth then
+                logger.log("health higher than limit, resetting to limit", stats.maxHealth)
+                stats.health = stats.maxHealth
+            end
+            logger.log("medpack after", stats)
+            Space.Shared.CallFunction(channel, "updateMeter", {})
+        end
+    end
+end
+
+function addHealth()
+    medpack.addHealth()
+end

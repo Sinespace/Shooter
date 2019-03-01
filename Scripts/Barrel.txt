@@ -1,0 +1,133 @@
+channel = channel or 'space.sine.fps'
+
+gun = {}
+gun.barrel = Space.Host.GetReference('barrel')
+gun.bullet = Space.GetResource('bullet')
+gun.bulletType = bulletType or 'bullet'
+gun.fireRate = fireRate or 5.0
+gun.range = range or 500
+gun.damageNpc = hitDamageNpc or 10
+gun.damagePlayer = hitDamagePlayer or 10
+gun.showHit = showHits or true
+--gun.modeFirst = false
+
+logger = logger or {}
+
+gun.fire = function()
+    -- logger.log('trying fire', gun.stats)
+    if gun.stats == nil or gun.stats.bullets == nil then
+        -- logger.log('no stats or no bullets')
+        return
+    end
+    if gun.stats.bullets[gun.bulletType] == nil then
+        -- logger.log('no bullets of type ' + gun.bulletType, gun.stats.bullets)
+        return
+    end
+    if gun.stats.bullets[gun.bulletType] > 0 then
+        -- logger.log('aiming')
+        local startPos = Space.Camera.MainCamera.WorldPosition
+
+        local hit = nil
+
+        local hits = Space.Physics.RayCastSingle(startPos, Space.Camera.MainCamera.Forward, gun.range)
+        if hits.ContainsHit then
+            logger.log('fire, hits', hits)
+            hit = hits
+        else
+            logger.log('no hit')
+        end
+
+        -- logger.log('fire, hit', hit)
+        Space.Host.InvokeEvent('fire')
+
+        gun.stats.bullets[gun.bulletType] = gun.stats.bullets[gun.bulletType] - 1
+
+        if hit ~= nil then
+            if hit.Object.Root.Avatar ~= nil then
+                logger.log('hit Avatar')
+                local data = {}
+                data['command'] = 'bullet'
+                data['damage'] = gun.damagePlayer
+                data['position'] = hit.Position
+                data['shooterposition'] = Space.Scene.PlayerAvatar.GameObject.WorldPosition
+                data['shootername'] = Space.Scene.PlayerAvatar.Username
+                data['shooterid'] = Space.Scene.PlayerAvatar.ID
+                data['player'] = hit.Object.Root.Avatar.ID
+                data['normal'] = (Space.Scene.PlayerAvatar.GameObject.WorldPosition - hit.Position).Normalised
+                local tmpChannel = channel .. '.' .. tostring(hit.Object.Root.Avatar.ID)
+                logger.log('sending avatar hit on channel', tmpChannel)
+                logger.log('send hit data', data)
+                Space.Shared.CallFunction(tmpChannel, 'hit', {data})
+                Space.Network.SendNetworkMessage(tmpChannel .. '.hit', data)
+            elseif hit.Object.Root.NavMeshAgent ~= nil then
+                logger.log('hit NPC', hit.Object.Root.Name)
+                local data = {}
+                data['command'] = 'bullet'
+                data['damage'] = gun.damageNpc
+                data['position'] = hit.Position
+                data['shooterposition'] = Space.Scene.PlayerAvatar.GameObject.WorldPosition
+                data['normal'] = (Space.Scene.PlayerAvatar.GameObject.WorldPosition - hit.Position).Normalised
+                Space.Shared.CallFunction(channel .. '.' .. hit.Object.Root.Name, 'hit', {data})
+                Space.Network.SendNetworkMessage(channel .. '.' .. hit.Object.Root.Name .. '.hit', data, false)
+            else
+                logger.log('no NavMeshAgent, environment')
+                logger.log(hit.Object.Root.Name)
+            end
+
+            logger.log('sending hit', gun.hitsChannel)
+            local hitData = {}
+            hitData['command'] = 'bullet'
+            hitData['damage'] = gun.damage
+            hitData['position'] = hit.Position
+            hitData['hitNormal'] = hit.Normal
+            hitData['normal'] = (Space.Scene.PlayerAvatar.GameObject.WorldPosition - hit.Position).Normalised
+            hitData['type'] = gun.bulletType
+            hitData['showHit'] = gun.showHit
+            hitData['shooterid'] = Space.Scene.PlayerAvatar.ID
+            Space.Network.SendNetworkMessage(channel .. '.rezBullet', hitData, false)
+            hitData['bullet'] = gun.bullet
+            Space.Shared.CallBroadcastFunction(channel, 'rezBullet', {hitData})
+
+            Space.Shared.CallFunction(channel, 'updateMeter', {})
+        end
+    end
+end
+
+gun.onDisable = function()
+    -- Space.Log('onDisable')
+    for i = 1, gun.poolSize, 1 do
+        local item = gun.bulletPool[i]
+        item.bullet.ParticleSystem.Stop(true)
+        item.bullet.Active = false
+    end
+end
+
+gun.onUpdate = function()
+    if Space.Input.Fire then
+        -- logger.log('got fire in onUpdate')
+        if Space.Time > gun.nextFire then
+            -- logger.log('got valid time for shot')
+            gun.nextFire = Space.Time + gun.fireInterval
+            gun.fire()
+        -- else
+        -- logger.log('no shots allowed')
+        end
+    end
+end
+
+gun.init = function()
+    gun.fireInterval = 1.0 / gun.fireRate
+    gun.nextFire = 0
+
+    gun.stats = Space.Shared.GetGlobal(channel, 'stats')
+
+    logger.log('local')
+    logger.log('fire interval: ' .. tostring(gun.fireInterval))
+    Space.Host.ExecutingObject.OnUpdate(gun.onUpdate)
+    Space.Host.ExecutingObject.OnDisable(gun.onDisable)
+
+    gun.hitsChannel = channel .. '.hits.' .. tostring(Space.Scene.PlayerAvatar.ID)
+end
+
+-- gun.init()
+Space.Host.StartCoroutine(gun.init, nil, 'Barrel init')

@@ -1,0 +1,106 @@
+--@@@string,Channel,space.sine.fps
+--@@@integer,Interval,60
+--@@@object,NPC
+--@@@integer,SpawnMinRange,1
+--@@@integer,SpawnMaxRange,5
+
+npcSpawner = {}
+npcSpawner.channel = "space.sine.fps"
+if Channel ~= nil then
+    npcSpawner.channel = Channel
+end
+npcSpawner.npc = Space.GetResource("npc")
+if NPC ~= nil then
+    npcSpawner.npc = NPC
+end
+npcSpawner.spawnInterval = 5
+if Interval ~= nil then
+    npcSpawner.spawnInterval = Interval
+end
+npcSpawner.spawnMinRange = 1
+if SpawnMinRange ~= nil then
+    npcSpawner.spawnMinRange = SpawnMinRange
+end
+npcSpawner.spawnMaxRange = 5
+if SpawnMaxRange ~= nil then
+    npcSpawner.spawnMaxRange = SpawnMaxRange
+end
+
+npcSpawner.nextTime = 0
+npcSpawner.root = Space.Host.ExecutingObject.Root
+
+npcSpawner.spawn = function()
+  while true do
+    if npcSpawner.nextTime < Space.Time then
+      npcSpawner.nextTime = Space.Time + npcSpawner.spawnInterval + math.random(10) - 5
+      local bot = Space.Scene.CreateGameObject(npcSpawner.npc)
+      local distance = math.random(npcSpawner.spawnMaxRange - npcSpawner.spawnMinRange) + npcSpawner.spawnMinRange
+      logger.log("distance", distance)
+      local degree = math.random(360) / 180 * math.pi
+      logger.log("degree", degree)
+      local offX = math.sin(degree) * distance
+      logger.log("offX", offX)
+      local offZ = math.cos(degree) * distance
+      logger.log("offZ", offZ)
+      local offset = Vector.New(offX, 0, offZ)
+      bot.WorldPosition = npcSpawner.root.WorldPosition + offset
+      bot.Name = "bot_" .. Space.String.GenerateGUID()
+      bot.Active = true
+      npcSpawner.lastBot = bot
+    end
+    coroutine.yield(5)
+  end
+end
+
+npcSpawner.onRecieve = function(arguments)
+  logger.log("got network", arguments)
+  local data = arguments.Message
+  if data["command"] == "spawn" then
+    local bot = Space.Scene.CreateGameObject(npcSpawner.npc)
+    bot.WorldPosition = npcSpawner.root.WorldPosition + data["position"]
+    bot.Name = data["name"]
+    bot.Active = true
+  end
+end
+
+npcSpawner.sendRegistrationData = function()
+  logger.log("preparing registration data")
+  local data = {}
+  data["command"] = "registerspawner"
+  data["id"] = npcSpawner.root.Name
+  data["spawnInterval"] = npcSpawner.spawnInterval
+  data["spawnMinRange"] = npcSpawner.spawnMinRange
+  data["spawnMaxRange"] = npcSpawner.spawnMaxRange
+  data["position"] = npcSpawner.root.WorldPosition
+  logger.log("registration data", data)
+  Space.Network.SendNetworkMessage(npcSpawner.channel, data, true)
+  logger.log("registration sent")
+end
+
+npcSpawner.onGlobalRecieve = function(arguments)
+  logger.log("got network", arguments)
+  local data = arguments.Message
+  if data["command"] == "reregister" then
+    npcSpawner.sendRegistrationData()
+  end
+end
+
+npcSpawner.register = function()
+  logger.log("starting registration")
+  npcSpawner.sendRegistrationData()
+  logger.log("starting subscribing")
+  Space.Network.SubscribeToNetwork(npcSpawner.channel, npcSpawner.onGlobalRecieve)
+  Space.Network.SubscribeToNetwork(npcSpawner.channel .. "." .. npcSpawner.root.Name, npcSpawner.onRecieve)
+end
+
+npcSpawner.init = function()
+  -- npcSpawner.nextTime = Space.Time + math.random(10)
+
+  -- Space.Host.StartCoroutine(npcSpawner.spawn)
+  Space.Host.InvokeDelayed(npcSpawner.register, 0.1)
+end
+
+logger.enabled = true
+npcSpawner.init()
+
+Space.Log("test complete")

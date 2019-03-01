@@ -1,0 +1,50 @@
+channel = channel or 'space.sine.fps'
+
+spawnpoint = spawnpoint or {}
+spawnpoint.team = team or ''
+spawnpoint.spawnMinRange = spawnMinRange or 0
+spawnpoint.spawnMaxRange = spawnMaxRange or 5
+
+logger = logger or {}
+
+spawnpoint.init = function()
+    if spawnpoint.team ~= nil and spawnpoint.team ~= "" then
+        Space.Host.InvokeEvent(spawnpoint.team)
+    else
+        Space.Host.InvokeEvent("Free")
+    end
+    local points = Space.Shared.GetGlobal(channel, 'spawnpoints') or {}
+    local dest = nil
+    for i = #points, 1, -1 do
+        if points[i].id == Space.Host.ExecutingObject.GlobalID then
+            dest = points[i]
+            logger.log('found destination', dest, true)
+        end
+        -- if points[i].id == Space.Host.ExecutingObject.GlobalID then
+        --     dest = points[i]
+        --     logger.log('found destination', dest)
+        -- end
+    end
+    if dest == nil then
+        dest = {}
+        dest.id = Space.Host.ExecutingObject.GlobalID
+        dest.object = Space.Host.ExecutingObject
+        logger.log('adding destination', dest)
+        points[#points + 1] = dest
+    end
+
+    dest.position = Space.Host.ExecutingObject.Root.WorldPosition
+    dest.rotation = Space.Host.ExecutingObject.Root.WorldRotation
+    dest.spawnMinRange = spawnpoint.spawnMinRange
+    dest.spawnMaxRange = spawnpoint.spawnMaxRange
+    dest.team = spawnpoint.team
+    logger.log('updating destination', dest)
+    -- points[#points + 1] = dest
+    if #points == 1 then
+        logger.log("created new destination list", points)
+        Space.Shared.SetGlobal(channel, 'spawnpoints', points)
+    end
+    logger.log('stored destination list', points)
+end
+
+spawnpoint.init()

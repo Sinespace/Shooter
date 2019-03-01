@@ -1,0 +1,901 @@
+fileFormatVersion: 2
+guid: a1b09555d85fcea4787396c470564e68
+ModelImporter:
+  serializedVersion: 22
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: GHOUL_
+    100004: GHOUL_ Head
+    100006: GHOUL_ L Calf
+    100008: GHOUL_ L Clavicle
+    100010: GHOUL_ L Finger0
+    100012: GHOUL_ L Finger01
+    100014: GHOUL_ L Finger02
+    100016: GHOUL_ L Finger1
+    100018: GHOUL_ L Finger11
+    100020: GHOUL_ L Finger12
+    100022: GHOUL_ L Finger2
+    100024: GHOUL_ L Finger21
+    100026: GHOUL_ L Finger22
+    100028: GHOUL_ L Finger3
+    100030: GHOUL_ L Finger31
+    100032: GHOUL_ L Finger32
+    100034: GHOUL_ L Finger4
+    100036: GHOUL_ L Finger41
+    100038: GHOUL_ L Finger42
+    100040: GHOUL_ L Foot
+    100042: GHOUL_ L Forearm
+    100044: GHOUL_ L Hand
+    100046: GHOUL_ L Thigh
+    100048: GHOUL_ L Toe0
+    100050: GHOUL_ L UpperArm
+    100052: GHOUL_ Neck
+    100054: GHOUL_ Pelvis
+    100056: GHOUL_ Ponytail1
+    100058: GHOUL_ R Calf
+    100060: GHOUL_ R Clavicle
+    100062: GHOUL_ R Finger0
+    100064: GHOUL_ R Finger01
+    100066: GHOUL_ R Finger02
+    100068: GHOUL_ R Finger1
+    100070: GHOUL_ R Finger11
+    100072: GHOUL_ R Finger12
+    100074: GHOUL_ R Finger2
+    100076: GHOUL_ R Finger21
+    100078: GHOUL_ R Finger22
+    100080: GHOUL_ R Finger3
+    100082: GHOUL_ R Finger31
+    100084: GHOUL_ R Finger32
+    100086: GHOUL_ R Finger4
+    100088: GHOUL_ R Finger41
+    100090: GHOUL_ R Finger42
+    100092: GHOUL_ R Foot
+    100094: GHOUL_ R Forearm
+    100096: GHOUL_ R Hand
+    100098: GHOUL_ R Thigh
+    100100: GHOUL_ R Toe0
+    100102: GHOUL_ R UpperArm
+    100104: GHOUL_ Spine
+    100106: GHOUL_ Spine1
+    400000: //RootNode
+    400002: GHOUL_
+    400004: GHOUL_ Head
+    400006: GHOUL_ L Calf
+    400008: GHOUL_ L Clavicle
+    400010: GHOUL_ L Finger0
+    400012: GHOUL_ L Finger01
+    400014: GHOUL_ L Finger02
+    400016: GHOUL_ L Finger1
+    400018: GHOUL_ L Finger11
+    400020: GHOUL_ L Finger12
+    400022: GHOUL_ L Finger2
+    400024: GHOUL_ L Finger21
+    400026: GHOUL_ L Finger22
+    400028: GHOUL_ L Finger3
+    400030: GHOUL_ L Finger31
+    400032: GHOUL_ L Finger32
+    400034: GHOUL_ L Finger4
+    400036: GHOUL_ L Finger41
+    400038: GHOUL_ L Finger42
+    400040: GHOUL_ L Foot
+    400042: GHOUL_ L Forearm
+    400044: GHOUL_ L Hand
+    400046: GHOUL_ L Thigh
+    400048: GHOUL_ L Toe0
+    400050: GHOUL_ L UpperArm
+    400052: GHOUL_ Neck
+    400054: GHOUL_ Pelvis
+    400056: GHOUL_ Ponytail1
+    400058: GHOUL_ R Calf
+    400060: GHOUL_ R Clavicle
+    400062: GHOUL_ R Finger0
+    400064: GHOUL_ R Finger01
+    400066: GHOUL_ R Finger02
+    400068: GHOUL_ R Finger1
+    400070: GHOUL_ R Finger11
+    400072: GHOUL_ R Finger12
+    400074: GHOUL_ R Finger2
+    400076: GHOUL_ R Finger21
+    400078: GHOUL_ R Finger22
+    400080: GHOUL_ R Finger3
+    400082: GHOUL_ R Finger31
+    400084: GHOUL_ R Finger32
+    400086: GHOUL_ R Finger4
+    400088: GHOUL_ R Finger41
+    400090: GHOUL_ R Finger42
+    400092: GHOUL_ R Foot
+    400094: GHOUL_ R Forearm
+    400096: GHOUL_ R Hand
+    400098: GHOUL_ R Thigh
+    400100: GHOUL_ R Toe0
+    400102: GHOUL_ R UpperArm
+    400104: GHOUL_ Spine
+    400106: GHOUL_ Spine1
+    7400000: attack1
+    9500000: //RootNode
+  externalObjects: {}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    animationCompression: 3
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: attack1
+      takeName: Take 001
+      firstFrame: 0
+      lastFrame: 30
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human:
+    - boneName: GHOUL_ Pelvis
+      humanName: Hips
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: GHOUL_ L Thigh
+      humanName: LeftUpperLeg
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: GHOUL_ R Thigh
+      humanName: RightUpperLeg
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: GHOUL_ L Calf
+      humanName: LeftLowerLeg
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: GHOUL_ R Calf
+      humanName: RightLowerLeg
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: GHOUL_ L Foot
+      humanName: LeftFoot
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: GHOUL_ R Foot
+      humanName: RightFoot
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: GHOUL_ Spine
+      humanName: Spine
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: GHOUL_ Spine1
+      humanName: Chest
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: GHOUL_ Neck
+      humanName: Neck
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: GHOUL_ Head
+      humanName: Head
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: GHOUL_ L Clavicle
+      humanName: LeftShoulder
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: GHOUL_ R Clavicle
+      humanName: RightShoulder
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: GHOUL_ L UpperArm
+      humanName: LeftUpperArm
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: GHOUL_ R UpperArm
+      humanName: RightUpperArm
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: GHOUL_ L Forearm
+      humanName: LeftLowerArm
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: GHOUL_ R Forearm
+      humanName: RightLowerArm
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: GHOUL_ L Hand
+      humanName: LeftHand
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: GHOUL_ R Hand
+      humanName: RightHand
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: GHOUL_ L Toe0
+      humanName: LeftToes
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: GHOUL_ R Toe0
+      humanName: RightToes
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: GHOUL_ L Finger0
+      humanName: Left Thumb Proximal
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: GHOUL_ L Finger01
+      humanName: Left Thumb Intermediate
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: GHOUL_ L Finger02
+      humanName: Left Thumb Distal
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: GHOUL_ L Finger1
+      humanName: Left Index Proximal
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: GHOUL_ L Finger11
+      humanName: Left Index Intermediate
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: GHOUL_ L Finger12
+      humanName: Left Index Distal
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: GHOUL_ L Finger2
+      humanName: Left Middle Proximal
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: GHOUL_ L Finger21
+      humanName: Left Middle Intermediate
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: GHOUL_ L Finger22
+      humanName: Left Middle Distal
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: GHOUL_ L Finger3
+      humanName: Left Ring Proximal
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: GHOUL_ L Finger31
+      humanName: Left Ring Intermediate
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: GHOUL_ L Finger32
+      humanName: Left Ring Distal
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: GHOUL_ L Finger4
+      humanName: Left Little Proximal
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: GHOUL_ L Finger41
+      humanName: Left Little Intermediate
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: GHOUL_ L Finger42
+      humanName: Left Little Distal
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: GHOUL_ R Finger0
+      humanName: Right Thumb Proximal
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: GHOUL_ R Finger01
+      humanName: Right Thumb Intermediate
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: GHOUL_ R Finger02
+      humanName: Right Thumb Distal
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: GHOUL_ R Finger1
+      humanName: Right Index Proximal
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: GHOUL_ R Finger11
+      humanName: Right Index Intermediate
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: GHOUL_ R Finger12
+      humanName: Right Index Distal
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: GHOUL_ R Finger2
+      humanName: Right Middle Proximal
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: GHOUL_ R Finger21
+      humanName: Right Middle Intermediate
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: GHOUL_ R Finger22
+      humanName: Right Middle Distal
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: GHOUL_ R Finger3
+      humanName: Right Ring Proximal
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: GHOUL_ R Finger31
+      humanName: Right Ring Intermediate
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: GHOUL_ R Finger32
+      humanName: Right Ring Distal
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: GHOUL_ R Finger4
+      humanName: Right Little Proximal
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: GHOUL_ R Finger41
+      humanName: Right Little Intermediate
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: GHOUL_ R Finger42
+      humanName: Right Little Distal
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    skeleton:
+    - name: GHOUL@attack1(Clone)
+      parentName: 
+      position: {x: 0, y: 0, z: 0}
+      rotation: {x: -0.058380306, y: -0.12194497, z: -0.010244432, w: 0.99076545}
+      scale: {x: 1, y: 1, z: 1}
+    - name: GHOUL_
+      parentName: GHOUL@attack1(Clone)
+      position: {x: -0, y: 1.0352324, z: -0.24114254}
+      rotation: {x: -0.4170645, y: 0.5272521, z: 0.5859361, w: 0.45248356}
+      scale: {x: 1, y: 1, z: 1}
+    - name: GHOUL_ Pelvis
+      parentName: GHOUL_
+      position: {x: -0.35754603, y: 0.09373906, z: 0.3479739}
+      rotation: {x: 0.5, y: -0.5, z: -0.5, w: -0.5}
+      scale: {x: 1, y: 1.0000001, z: 1.0000001}
+    - name: GHOUL_ L Thigh
+      parentName: GHOUL_ Pelvis
+      position: {x: 0.00000015258789, y: 0.00000019073485, z: 0.1119515}
+      rotation: {x: 0, y: 1, z: 0, w: -0.00000004371139}
+      scale: {x: 1.0000001, y: 1.0000001, z: 0.99999994}
+    - name: GHOUL_ L Calf
+      parentName: GHOUL_ L Thigh
+      position: {x: -0.6345331, y: 0.000000114440915, z: -0.000000038146972}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 0.99999994, y: 0.99999994, z: 1}
+    - name: GHOUL_ L Foot
+      parentName: GHOUL_ L Calf
+      position: {x: -0.585408, y: -0.000000019073486, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 0.99999994, y: 0.9999998, z: 0.99999994}
+    - name: GHOUL_ L Toe0
+      parentName: GHOUL_ L Foot
+      position: {x: -0.101161666, y: 0.20657542, z: -0.000000038146972}
+      rotation: {x: 0, y: 0, z: 0.7071068, w: -0.7071068}
+      scale: {x: 0.99999994, y: 0.9999998, z: 1}
+    - name: GHOUL_ R Thigh
+      parentName: GHOUL_ Pelvis
+      position: {x: -0.00000015258789, y: -0.000000114440915, z: -0.1119515}
+      rotation: {x: 0, y: 1, z: 0, w: -0.00000004371139}
+      scale: {x: 0.99999994, y: 1, z: 0.99999994}
+    - name: GHOUL_ R Calf
+      parentName: GHOUL_ R Thigh
+      position: {x: -0.63453335, y: -0.000000009536743, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 0.9999999, y: 1.0000001, z: 1}
+    - name: GHOUL_ R Foot
+      parentName: GHOUL_ R Calf
+      position: {x: -0.5854081, y: -0.000000057220458, z: 0.000000076293944}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1.0000001, y: 1, z: 1}
+    - name: GHOUL_ R Toe0
+      parentName: GHOUL_ R Foot
+      position: {x: -0.101161666, y: 0.20657547, z: 0.000000076293944}
+      rotation: {x: 0, y: 0, z: 0.7071068, w: -0.7071068}
+      scale: {x: 0.99999994, y: 0.9999999, z: 0.99999994}
+    - name: GHOUL_ Spine
+      parentName: GHOUL_ Pelvis
+      position: {x: -0.15366699, y: 0.013590889, z: 0.0000045490265}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 0.99999994, y: 1, z: 0.99999994}
+    - name: GHOUL_ Spine1
+      parentName: GHOUL_ Spine
+      position: {x: -0.25670952, y: -0.00022384644, z: 0.0000021743774}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 0.99999994, y: 0.9999998, z: 1.0000001}
+    - name: GHOUL_ L Clavicle
+      parentName: GHOUL_ Spine1
+      position: {x: -0.25081953, y: 0.0017505646, z: 0.067651674}
+      rotation: {x: 0.7071068, y: -0.000000030908623, z: -0.7071068, w: 0.000000030908623}
+      scale: {x: 0.9999999, y: 0.9999999, z: 0.9999999}
+    - name: GHOUL_ L UpperArm
+      parentName: GHOUL_ L Clavicle
+      position: {x: -0.18392093, y: 0, z: -0.00000015258789}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1.0000001, y: 1.0000004, z: 1.0000001}
+    - name: GHOUL_ L Forearm
+      parentName: GHOUL_ L UpperArm
+      position: {x: -0.3831684, y: 0.000000038146972, z: 0.000000076293944}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 0.9999998, y: 0.99999994, z: 1}
+    - name: GHOUL_ L Hand
+      parentName: GHOUL_ L Forearm
+      position: {x: -0.37296385, y: 0, z: -0.000000076293944}
+      rotation: {x: 0.7071068, y: 0, z: 0, w: -0.7071068}
+      scale: {x: 0.9999999, y: 1, z: 1}
+    - name: GHOUL_ L Finger0
+      parentName: GHOUL_ L Hand
+      position: {x: -0.050521355, y: 0.020660324, z: -0.031481285}
+      rotation: {x: 0, y: 0.3826835, z: 0, w: -0.9238795}
+      scale: {x: 1.0000002, y: 1.0000004, z: 1}
+    - name: GHOUL_ L Finger01
+      parentName: GHOUL_ L Finger0
+      position: {x: -0.05118285, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 0.99999994, y: 0.99999994, z: 0.99999994}
+    - name: GHOUL_ L Finger02
+      parentName: GHOUL_ L Finger01
+      position: {x: -0.039206486, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1, y: 0.9999999, z: 1}
+    - name: GHOUL_ L Finger1
+      parentName: GHOUL_ L Hand
+      position: {x: -0.12746021, y: 0.017909393, z: -0.04851658}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1, y: 1.0000001, z: 1.0000001}
+    - name: GHOUL_ L Finger11
+      parentName: GHOUL_ L Finger1
+      position: {x: -0.053956296, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1, y: 0.99999994, z: 1}
+    - name: GHOUL_ L Finger12
+      parentName: GHOUL_ L Finger11
+      position: {x: -0.0495829, y: 0, z: -0.000000038146972}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 0.99999994, y: 1, z: 1}
+    - name: GHOUL_ L Finger2
+      parentName: GHOUL_ L Hand
+      position: {x: -0.12741299, y: 0.008958054, z: -0.014390296}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1, y: 1, z: 1.0000001}
+    - name: GHOUL_ L Finger21
+      parentName: GHOUL_ L Finger2
+      position: {x: -0.07163055, y: 0.000000076293944, z: -0.000000038146972}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1.0000001, y: 1.0000001, z: 1}
+    - name: GHOUL_ L Finger22
+      parentName: GHOUL_ L Finger21
+      position: {x: -0.04812393, y: 0.00000015258789, z: 0.000000038146972}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: GHOUL_ L Finger3
+      parentName: GHOUL_ L Hand
+      position: {x: -0.13381802, y: 0.00687973, z: 0.019945411}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1, y: 1, z: 1.0000001}
+    - name: GHOUL_ L Finger31
+      parentName: GHOUL_ L Finger3
+      position: {x: -0.057175253, y: 0, z: -0.000000076293944}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 0.99999994, y: 0.99999994, z: 0.9999999}
+    - name: GHOUL_ L Finger32
+      parentName: GHOUL_ L Finger31
+      position: {x: -0.046341438, y: -0.00000015258789, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1, y: 0.99999994, z: 1}
+    - name: GHOUL_ L Finger4
+      parentName: GHOUL_ L Hand
+      position: {x: -0.11901607, y: 0.0020745087, z: 0.051637534}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1, y: 1.0000001, z: 1.0000001}
+    - name: GHOUL_ L Finger41
+      parentName: GHOUL_ L Finger4
+      position: {x: -0.054744985, y: -0.000000076293944, z: -0.000000019073486}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1, y: 0.99999994, z: 1}
+    - name: GHOUL_ L Finger42
+      parentName: GHOUL_ L Finger41
+      position: {x: -0.044963453, y: 0, z: -0.000000038146972}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1.0000001, y: 1.0000001, z: 1.0000001}
+    - name: GHOUL_ Neck
+      parentName: GHOUL_ Spine1
+      position: {x: -0.29294097, y: -0.00012413025, z: -0.000025110245}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 0.99999976, y: 0.9999998, z: 0.99999994}
+    - name: GHOUL_ Head
+      parentName: GHOUL_ Neck
+      position: {x: -0.19054995, y: 0, z: 0.0000000047683715}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1.0000001, y: 1.0000001, z: 1}
+    - name: GHOUL_ Ponytail1
+      parentName: GHOUL_ Head
+      position: {x: -0.035118103, y: 0.079552, z: 0.00000079154967}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1, y: 1.0000001, z: 1}
+    - name: GHOUL_ R Clavicle
+      parentName: GHOUL_ Spine1
+      position: {x: -0.25081953, y: 0.001750946, z: -0.067651674}
+      rotation: {x: 0.7071068, y: -0.000000030908623, z: 0.7071068, w: -0.000000030908623}
+      scale: {x: 0.9999999, y: 0.9999999, z: 0.9999998}
+    - name: GHOUL_ R UpperArm
+      parentName: GHOUL_ R Clavicle
+      position: {x: -0.18392089, y: 0.000000076293944, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1.0000001, y: 1.0000002, z: 1.0000001}
+    - name: GHOUL_ R Forearm
+      parentName: GHOUL_ R UpperArm
+      position: {x: -0.38316843, y: 0.00000015258789, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 0.9999999, y: 1.0000001, z: 1}
+    - name: GHOUL_ R Hand
+      parentName: GHOUL_ R Forearm
+      position: {x: -0.37296394, y: 0.000000076293944, z: 0}
+      rotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+      scale: {x: 0.9999999, y: 0.9999999, z: 0.99999994}
+    - name: GHOUL_ R Finger0
+      parentName: GHOUL_ R Hand
+      position: {x: -0.050521333, y: 0.020660248, z: 0.031481247}
+      rotation: {x: 0, y: 0.38268346, z: 0, w: 0.9238795}
+      scale: {x: 1.0000001, y: 1.0000002, z: 1.0000001}
+    - name: GHOUL_ R Finger01
+      parentName: GHOUL_ R Finger0
+      position: {x: -0.0511829, y: -0.000000019073486, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 0.99999994, y: 0.99999994, z: 1}
+    - name: GHOUL_ R Finger02
+      parentName: GHOUL_ R Finger01
+      position: {x: -0.039206468, y: 0.000000019073486, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 0.99999994, y: 1, z: 1}
+    - name: GHOUL_ R Finger1
+      parentName: GHOUL_ R Hand
+      position: {x: -0.1274602, y: 0.017909316, z: 0.04851658}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 0.99999994, y: 1.0000001, z: 1}
+    - name: GHOUL_ R Finger11
+      parentName: GHOUL_ R Finger1
+      position: {x: -0.053956296, y: 0, z: 0.000000076293944}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1.0000002, y: 1, z: 1}
+    - name: GHOUL_ R Finger12
+      parentName: GHOUL_ R Finger11
+      position: {x: -0.049582977, y: 0, z: -0.000000038146972}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: GHOUL_ R Finger2
+      parentName: GHOUL_ R Hand
+      position: {x: -0.12741293, y: 0.008958054, z: 0.014390258}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 0.9999999, y: 0.99999994, z: 1.0000001}
+    - name: GHOUL_ R Finger21
+      parentName: GHOUL_ R Finger2
+      position: {x: -0.07163063, y: 0, z: -0.000000076293944}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1, y: 0.99999994, z: 1}
+    - name: GHOUL_ R Finger22
+      parentName: GHOUL_ R Finger21
+      position: {x: -0.048124008, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 0.99999994, y: 0.9999999, z: 1}
+    - name: GHOUL_ R Finger3
+      parentName: GHOUL_ R Hand
+      position: {x: -0.13381788, y: 0.00687973, z: -0.019945374}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1, y: 1.0000001, z: 1.0000001}
+    - name: GHOUL_ R Finger31
+      parentName: GHOUL_ R Finger3
+      position: {x: -0.05717533, y: 0, z: 0.000000038146972}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 0.99999994, y: 0.99999994, z: 1.0000001}
+    - name: GHOUL_ R Finger32
+      parentName: GHOUL_ R Finger31
+      position: {x: -0.046341475, y: 0, z: -0.000000038146972}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: GHOUL_ R Finger4
+      parentName: GHOUL_ R Hand
+      position: {x: -0.11901594, y: 0.0020744323, z: -0.05163757}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1, y: 1, z: 1.0000001}
+    - name: GHOUL_ R Finger41
+      parentName: GHOUL_ R Finger4
+      position: {x: -0.054744873, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1, y: 1.0000001, z: 1.0000001}
+    - name: GHOUL_ R Finger42
+      parentName: GHOUL_ R Finger41
+      position: {x: -0.04496353, y: -0.000000038146972, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 1
+    hasExtraRoot: 1
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 3
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,0 +1,79 @@
+channel = channel or 'space.sine.fps'
+collisionTrap = {}
+
+collisionTrap.handleCollision = function()
+    if collisionTrap.stats == nil then
+        collisionTrap.stats = Space.Shared.GetGlobal(channel, 'stats')
+        logger.log('stats', collisionTrap.stats)
+    end
+    while collisionTrap.colliding and collisionTrap.stats.health > 0 do
+        if Space.Time > collisionTrap.lastContact + collisionTrap.interval then
+            collisionTrap.lastContact = Space.Time
+            collisionTrap.stats.health = collisionTrap.stats.health - collisionTrap.damage
+            if collisionTrap.stats.health <= 0 then
+                collisionTrap.stats.health = 0
+                Space.Shared.CallFunction(channel, 'die', {})
+                if collisionTrap.animator ~= nil then
+                    collisionTrap.animator.SetTrigger('Kill')
+                end
+                Space.Host.InvokeEvent('kill')
+            else
+                Space.Host.InvokeEvent('damage')
+                Space.Shared.CallFunction(channel, 'damage', {})
+                Space.Shared.CallFunction(channel, 'updateMeter', {})
+            end
+        end
+        if collisionTrap.repeatDamage == false then
+            collisionTrap.colliding = false
+        end
+        coroutine.yield(1)
+    end
+end
+
+collisionTrap.avatarCollision = function()
+    collisionTrap.colliding = true
+    Space.Host.StartCoroutine(collisionTrap.handleCollision, nil, 'DamageTrap avatarCollision')
+end
+
+collisionTrap.avatarCollisionEnd = function()
+    collisionTrap.colliding = false
+end
+
+collisionTrap.setup = function()
+    collisionTrap.damage = trapDamage or 1
+    collisionTrap.interval = trapInterval or 0.25
+    collisionTrap.repeatDamage = (trapInterval or 0) > 0
+
+    collisionTrap.lastContact = 0
+    collisionTrap.colliding = false
+
+    if Space.Host.GetReference('animator') ~= nil then
+        collisionTrap.animator = Space.Host.GetReference('animator').Animator
+    else
+        collisionTrap.animator = nil
+    end
+
+    if Space.Host.GetReference('activator') ~= nil then
+        Space.Host.InvokeEvent('deactivateTrap')
+    else
+        Space.Host.InvokeEvent('activateTrap')
+    end
+end
+
+collisionTrap.setup()
+
+function collisionTrapAvatarCollision()
+    collisionTrap.avatarCollision()
+end
+
+function collisionTrapAvatarCollisionEnd()
+    collisionTrap.avatarCollisionEnd()
+end
+
+function activateTrap()
+    Space.Host.InvokeEvent('activateTrap')
+end
+
+function deactivateTrap()
+    Space.Host.InvokeEvent('deactivateTrap')
+end

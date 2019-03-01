@@ -1,0 +1,273 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications: []
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 1926611399138066}
+  m_IsPrefabParent: 1
+--- !u!1 &1894849422560926
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4758376594169400}
+  m_Layer: 0
+  m_Name: FpsGunScale
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &1926611399138066
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4578042669713792}
+  - component: {fileID: 114405319694842932}
+  - component: {fileID: 114315332365336738}
+  m_Layer: 0
+  m_Name: FPS GunAdapter Scale 10
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4578042669713792
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1926611399138066}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 20.725998, y: 4.2641582, z: 11.168279}
+  m_LocalScale: {x: 1.0000001, y: 1, z: 1.0000004}
+  m_Children:
+  - {fileID: 4758376594169400}
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &4758376594169400
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1894849422560926}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
+  m_Children: []
+  m_Father: {fileID: 4578042669713792}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &114315332365336738
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1926611399138066}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 867b5733719b61841af704c48dbe399e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ClothingItemID: 0
+  Slots:
+    Head: 0
+    Hair: 0
+    Hat: 0
+    Neck: 0
+    Face: 0
+    Chest: 0
+    UpperChest: 0
+    Back: 0
+    LeftArm: 0
+    RightArm: 0
+    LeftHand: 0
+    RightHand: 1
+    LeftFinger: 0
+    RightFinger: 0
+    Pelvis: 0
+    LeftLeg: 0
+    RightLeg: 0
+    LeftFoot: 0
+    RightFoot: 0
+    SkinBase: 0
+    Costume: 0
+    Animator: 0
+  Layer: 4
+  ObscurationDistance: 0.01
+  ObscurationDistanceHigh: 0.005
+  ObscurationDistanceLow: 0.03
+  SkipDeletion: 0
+  KeepMaterialsAlways: 0
+  RestrictCustomisation: 0
+  Gender: 2
+  Skeleton: 0
+  Attachment: 1
+  AttachToThisBone: {fileID: 0}
+  DeletionZones: []
+  KeepZones: []
+  InternalSettings:
+    DoNotEditBonePath: RightHand
+    DoNotEditOffsetPosition: {x: -7.863926, y: 2.6901603, z: -10.787327}
+    DoNotEditOffsetRotation: {x: -0.0013923101, y: 0.0056367167, z: -0.012428453,
+      w: -0.9999059}
+    DoNotEditOffsetScale: {x: 1.0000004, y: 1, z: 0.9999994}
+    DoNotEditOccludedVerticesData: 
+    DoNotEditPartialVerticesData: 
+    DoNotEditBoneData: []
+    HasPrepared: 1
+    DoNotEditVertexMaps: []
+    DoNotEditClothColliders: []
+    ClothingOcclusion:
+    - Version: 1
+      SkeletonID: 0
+      LOD: 1
+      Root: {fileID: 1926611399138066}
+      VertexMaps: []
+      OccludedVerticesData: 
+      PartialVerticesData: 
+      BoneTransformIDs: []
+  ExtraSettings:
+    TattooLayer:
+      Enabled: 0
+      Type: 0
+      Blend: 0
+      DefaultTint: {r: 1, g: 1, b: 1, a: 1}
+      MaskMode: 0
+      Albedo: {fileID: 0}
+      MetalSmoothness: {fileID: 0}
+      Normal: {fileID: 0}
+    Skeleton:
+      RootTemplate: {fileID: 0}
+      HighDetailTemplate: {fileID: 0}
+      LowDetailTemplate: {fileID: 0}
+    Shape:
+      ShapeData: 
+    WeightSettings:
+      AllowRerigging: 0
+      FlipYandZ: 0
+      HighRig90: 0
+      MediumRig90: 0
+      LowRig90: 0
+      AutoRigAlgorithm: 0
+      UseNormalContribution: 1
+      AngleDistanceBias: 0.1
+      AngleContribution: 0.75
+      UseCoreBoneWeighting: 0
+      AutoRigType: 0
+      SkinDistanceMinimum: 0.05
+      SkinDistanceMaximum: 0.2
+      RelaxationRounds: 0
+      RelaxationFactor: 0.9
+    Fitting:
+      SurfaceMode: 0
+      BelowMode: 0
+      SkinMode: 0
+      Direction: 0
+      Bagginess: 0
+      CompatibleTags: []
+    LevelOfDetail:
+      HighDetail: {fileID: 0}
+      MediumDetail: {fileID: 0}
+      LowDetail: {fileID: 0}
+    Animations:
+      AnimationOverrides: []
+      Controller: {fileID: 0}
+      MagnitudeProperty: 
+      AngleProperty: 
+      FlyVerticalProperty: 
+      FloorAngleProperty: 
+      IsFallingProperty: 
+      IsJumpProperty: 
+      IsFlyingProperty: 
+      IsCrouchProperty: 
+    Heel:
+      UseHeelSettings: 0
+      HeelAmount: 0
+      ArchOffset: 0
+      HeightOffset: 0
+    CustomisationPack: {fileID: 0}
+    BodyShape:
+      VertexDisplacementMap: {fileID: 0}
+      Layout: 0
+  OnlyContainsSkin: 0
+  ReplacementSkin: []
+  Tab1: 0
+  Tab2: 0
+--- !u!114 &114405319694842932
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1926611399138066}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5513f562b7975a542937afd116042bbe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AutoSetup: 1
+  Type: 1
+  CustomType: 
+  InworldCustomisation: 0
+  Description:
+    Language: 10
+    Name: FPS GunAdapter Scale 10
+    Description: FPS GunAdapter Scale 10
+    Brand: FPS
+    Instructions: 
+    ReleaseNotes: 
+  Localised: []
+  ItemStoreIcon: {fileID: 0}
+  StoreImage1: {fileID: 0}
+  StoreImage2: {fileID: 0}
+  StoreImage3: {fileID: 0}
+  StoreImage4: {fileID: 0}
+  StoreImage5: {fileID: 0}
+  ItemInventoryIcon: {fileID: 0}
+  BrandIcon: {fileID: 2800000, guid: e2384d489a1d1c6468b7ebb711c6bb16, type: 3}
+  YouTubeURL: 
+  HomepageURL: 
+  NotForSale: 0
+  PriceSilver: 0
+  PriceGold: 0
+  AllowUseInPromotions: 0
+  MaxDiscountInSales: 0
+  MaxOwned: 0
+  MaxCopiesPerItem: 0
+  DerivationID: 0
+  DerivationAllowed: 0
+  DerivationPack: 
+  Rating: 1
+  Category: Clothes/Accessory/Miscellaneous
+  CategoryCode: 30405
+  ItemTags: []
+  DeveloperName: Ulli Berthold
+  Copyright: "\xA92019 dotEnterprise / Ulli Berthold"
+  GridID: 0
+  ResumeID: 0
+  CopyrightContainsThirdParty: 0
+  CopyrightContainsThirdPartyLicensed: 0
+  CopyrightContainsThirdPartyFairUse: 0
+  TrademarksContainsThirdParty: 0
+  TrademarksContainsThirdPartyLicensed: 0
+  TrademarksContainsThirdPartyFairUse: 0
+  ModioTemplateID: 0
+  Flags:
+    ViolenceAndGore: 1
+    Alcohol: 0
+    HorrorThemes: 0
+    IllicitDrugReferences: 0
+    ExplicitOrAdultContent: 0
+  ID: 2121663

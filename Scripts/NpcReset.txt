@@ -1,0 +1,43 @@
+channel = channel or 'space.sine.fps'
+
+npcReset = {}
+
+damage = damage or {}
+collisionDamage = collisionDamage or {}
+npcFollower = npcFollower or {}
+
+npcReset.reset = function()
+    logger.log("resetting / stopping npc")
+    npcFollower.hidden = true
+    -- damage.setup()
+    -- damage.npcSetup()
+    -- collisionDamage.setup()
+    -- npcFollower.setup()
+    -- damage.updateTitle()
+    Space.Host.InvokeEvent("hide")
+end
+
+npcReset.callSpawn = function()
+    Space.Host.InvokeEvent("spawn")
+end
+npcReset.restartCoroutine = function()
+    npcFollower.hidden = false
+    damage.setup()
+    damage.npcSetup()
+    collisionDamage.setup()
+    npcFollower.setup()
+    Space.Host.ExecutingObject.NavMeshAgent.Enabled = true
+    damage.updateTitle()
+    -- Space.Host.InvokeEvent("spawn")
+    logger.log("restart complete")
+    Space.Host.StartCoroutine(npcReset.callSpawn, nil, "npcReset callSpawn")
+end
+
+npcReset.restart = function()
+    logger.log("initializing restart")
+    Space.Host.StartCoroutine(npcReset.restartCoroutine, nil, "npcReset restart")
+end
+
+npcReset.reset()
+Space.Shared.RegisterFunction(channel .. "." .. Space.Host.ExecutingObject.Name, "reset", npcReset.reset)
+Space.Shared.RegisterFunction(channel .. "." .. Space.Host.ExecutingObject.Name, "restart", npcReset.restart)

@@ -1,0 +1,27 @@
+selfDestroy = {}
+selfDestroy.lifeTime = 60
+selfDestroy.startTime = 0
+
+selfDestroy.onUpdate = function()
+  if Space.Time > selfDestroy.startTime + selfDestroy.lifeTime then
+    if npcFollower ~= nil then
+      if npcFollower.onSelfDestroy ~= nil then
+        npcFollower.onSelfDestroy()
+      end
+    end
+    Space.Host.ExecutingObject.Destroy()
+  end
+end
+
+selfDestroy.resetTimer = function(seconds)
+  logger.log("resetting timer to seconds", seconds)
+  selfDestroy.startTime = Space.Time
+  selfDestroy.lifeTime = seconds
+end
+
+selfDestroy.init = function()
+  selfDestroy.startTime = Space.Time
+  Space.Host.ExecutingObject.OnUpdate(selfDestroy.onUpdate)
+end
+
+selfDestroy.init()

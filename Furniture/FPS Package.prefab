@@ -1,0 +1,173 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications: []
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 1713992032647654}
+  m_IsPrefabParent: 1
+--- !u!1 &1713992032647654
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4985454570724826}
+  - component: {fileID: 114899862594353164}
+  - component: {fileID: 114980018797264584}
+  - component: {fileID: 114705137517356332}
+  - component: {fileID: 114962234377106968}
+  m_Layer: 0
+  m_Name: FPS Package
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4985454570724826
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1713992032647654}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 11.370226, y: 3.0157175, z: 37.430557}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &114705137517356332
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1713992032647654}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -605777808, guid: 325c5b2a7434372429c2ca9d61dba58e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _guid: 
+  _referenceCollection:
+    _collection:
+    - {fileID: 1713992032647654}
+  _assetGuid: 3516159a42bba4e4ab5db4675d7a1cd0
+--- !u!114 &114899862594353164
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1713992032647654}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5513f562b7975a542937afd116042bbe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AutoSetup: 1
+  Type: 11
+  CustomType: 
+  InworldCustomisation: 2
+  Description:
+    Language: 10
+    Name: FPS Package
+    Description: FPS Package
+    Brand: dotEnterprise
+    Instructions: 
+    ReleaseNotes: 
+  Localised: []
+  ItemStoreIcon: {fileID: 2800000, guid: 10b564e982a04554f930916713917078, type: 3}
+  StoreImage1: {fileID: 0}
+  StoreImage2: {fileID: 0}
+  StoreImage3: {fileID: 0}
+  StoreImage4: {fileID: 0}
+  StoreImage5: {fileID: 0}
+  ItemInventoryIcon: {fileID: 2800000, guid: 10b564e982a04554f930916713917078, type: 3}
+  BrandIcon: {fileID: 2800000, guid: e2384d489a1d1c6468b7ebb711c6bb16, type: 3}
+  YouTubeURL: 
+  HomepageURL: 
+  NotForSale: 1
+  PriceSilver: 1000
+  PriceGold: 10
+  AllowUseInPromotions: 0
+  MaxDiscountInSales: 0
+  MaxOwned: 0
+  MaxCopiesPerItem: 0
+  DerivationID: 0
+  DerivationAllowed: 0
+  DerivationPack: 
+  Rating: 2
+  Category: Furniture/Game
+  CategoryCode: 53200
+  ItemTags: []
+  DeveloperName: Ulli Berthold
+  Copyright: "\xA92019 dotEnterprise / Ulli Berthold"
+  GridID: 0
+  ResumeID: 0
+  CopyrightContainsThirdParty: 0
+  CopyrightContainsThirdPartyLicensed: 0
+  CopyrightContainsThirdPartyFairUse: 0
+  TrademarksContainsThirdParty: 0
+  TrademarksContainsThirdPartyLicensed: 0
+  TrademarksContainsThirdPartyFairUse: 0
+  ModioTemplateID: 0
+  Flags:
+    ViolenceAndGore: 1
+    Alcohol: 0
+    HorrorThemes: 1
+    IllicitDrugReferences: 0
+    ExplicitOrAdultContent: 0
+  ID: 2120837
+--- !u!114 &114962234377106968
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1713992032647654}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 112998890, guid: 325c5b2a7434372429c2ca9d61dba58e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _guid: 11ef0cfc-6635-4feb-8450-b20697225974
+--- !u!114 &114980018797264584
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1713992032647654}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82dd5f940414de84c9feedac86990740, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BundleGroups:
+  - Mode: 0
+    ModeValue: 1
+    Items:
+    - ItemID: 2119452
+      Weight: 1
+    - ItemID: 2120621
+      Weight: 1
+    - ItemID: 2120761
+      Weight: 1
+    - ItemID: 2119450
+      Weight: 1
+    - ItemID: 2120622
+      Weight: 1
+    - ItemID: 2120790
+      Weight: 1
+    - ItemID: 2120343
+      Weight: 1
+    - ItemID: 2119810
+      Weight: 1
+    - ItemID: 2120760
+      Weight: 1
+    - ItemID: 2120556
+      Weight: 1

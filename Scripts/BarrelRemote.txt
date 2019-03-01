@@ -1,0 +1,42 @@
+--@@@string,bulletType,bullet
+--@@@integer,showHits,1
+--@@@string,channel,space.sine.fps
+
+channel = channel or 'space.sine.fps'
+
+gun = {}
+-- gun.hitsChannel = channel .. '.' .. tostring(Space.Host.ExecutingObject.Root.Avatar.ID) .. '.hit'
+gun.barrel = Space.Host.GetReference('barrel')
+gun.bullet = Space.GetResource('bullet')
+gun.bulletType = bulletType or 'bullet'
+gun.showHit = showHits or true
+
+gun.avatarId = -1
+
+logger = logger or {}
+
+gun.onHitRecieve = function(arguments)
+    logger.log('got network message')
+    local data = arguments.Message
+    if data['shooterid'] == gun.avatarId then
+        Space.Host.InvokeEvent('fire')
+    end
+end
+
+gun.delayInit = function()
+    gun.avatarId = Space.Host.ExecutingObject.Root.Avatar.ID
+    Space.Network.SubscribeToNetwork(channel .. '.rezBullet', gun.onHitRecieve)
+    local hitData = {}
+    hitData['command'] = 'check'
+    hitData['type'] = gun.bulletType
+    hitData['bullet'] = gun.bullet
+    Space.Shared.CallBroadcastFunction(channel, 'rezBullet', {hitData})
+end
+
+gun.init = function()
+    logger.log('remote')
+    logger.log('hit channel', gun.hitsChannel)
+    Space.Host.InvokeDelayed(gun.delayInit, 0.2)
+end
+
+gun.init()

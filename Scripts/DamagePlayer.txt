@@ -1,0 +1,29 @@
+channel = channel or 'space.sine.fps'
+
+damage = damage or {}
+logger = logger or {}
+
+damage.playDamageAction = function()
+    logger.log('playing damage action')
+    Space.Host.InvokeEvent('damage')
+end
+
+damage.die = function(hitData)
+    logger.log('rip')
+    Space.Shared.CallFunction(channel, 'die', {hitData})
+end
+
+damage.checkUpdateTitle = function()
+end
+
+damage.updateTitle = function()
+    Space.Shared.CallFunction(channel, 'updateMeter', {})
+end
+
+damage.playerSetup = function()
+    damage.setup()
+    damage.meter = Space.Shared.GetGlobal(channel, 'stats')
+end
+
+damage.init()
+damage.playerSetup()

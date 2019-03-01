@@ -1,0 +1,71 @@
+channel = channel or 'space.sine.fps'
+
+collisionDamage = collisionDamage or {}
+
+damage = damage or {}
+logger = logger or {}
+
+collisionDamage.handleCollision = function()
+    if collisionDamage.stats == nil then
+        collisionDamage.stats = Space.Shared.GetGlobal(channel, 'stats')
+        logger.log('stats', collisionDamage.stats)
+    end
+    while damage.dead == false and collisionDamage.colliding and collisionDamage.stats.health > 0 do
+        if damage.dead == false and Space.Time > collisionDamage.lastContact + collisionDamage.interval then
+            collisionDamage.lastContact = Space.Time
+            collisionDamage.stats.health = collisionDamage.stats.health - collisionDamage.damage
+            if collisionDamage.stats.health <= 0 then
+                collisionDamage.stats.health = 0
+                Space.Shared.CallFunction(channel, 'die', {})
+                if collisionDamage.animator ~= nil then
+                    collisionDamage.animator.SetBool('Attacking', false)
+                    coroutine.yield(0)
+                    collisionDamage.animator.SetTrigger('Kill')
+                end
+                Space.Host.InvokeEvent('kill')
+            else
+                Space.Shared.CallFunction(channel, 'damage', {})
+            end
+            Space.Shared.CallFunction(channel, 'updateMeter', {})
+        end
+        if collisionDamage.repeatDamage == false then
+            collisionDamage.colliding = false
+        end
+        coroutine.yield(1)
+    end
+end
+
+collisionDamage.avatarCollision = function()
+    collisionDamage.colliding = true
+    Space.Host.StartCoroutine(collisionDamage.handleCollision, nil, 'CollisionDamage avatarCollision')
+end
+
+collisionDamage.avatarCollisionEnd = function()
+    collisionDamage.colliding = false
+end
+
+collisionDamage.setup = function()
+    collisionDamage.damage = collisionDamageValue or 20
+    collisionDamage.interval = collisionInterval or 1
+    collisionDamage.repeatDamage = repeatDamage or true
+    --collisionDamage.stats = Space.Shared.GetGlobal(channel, "stats")
+
+    collisionDamage.lastContact = 0
+    collisionDamage.colliding = false
+
+    if Space.Host.GetReference('animator') ~= nil then
+        collisionDamage.animator = Space.Host.GetReference('animator').Animator
+    else
+        collisionDamage.animator = nil
+    end
+end
+
+collisionDamage.setup()
+
+function collisionDamageAvatarCollision()
+    collisionDamage.avatarCollision()
+end
+
+function collisionDamageAvatarCollisionEnd()
+    collisionDamage.avatarCollisionEnd()
+end

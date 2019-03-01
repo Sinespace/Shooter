@@ -1,0 +1,5 @@
+channel = channel or "space.sine.fps"
+
+board = board or {}
+
+logger = logger or {}

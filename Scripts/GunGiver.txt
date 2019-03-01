@@ -1,0 +1,112 @@
+channel = channel or 'space.sine.fps'
+
+gunGiver = {}
+gunGiver.gun = Space.GetResource('gun')
+gunGiver.gunRemote = Space.GetResource('gunRemote')
+gunGiver.gunMouselook = Space.GetResource('gunMouselook')
+gunGiver.gunType = gunType or 'gun'
+gunGiver.bulletType = bulletType or "default"
+gunGiver.animator = Space.GetResource('animator3rd')
+gunGiver.bone = nil
+gunGiver.bullet = Space.GetResource('bullet')
+gunGiver.gunBarIcon = Space.GetResource('icon')
+gunGiver.gunBarOrder = order or 0
+
+Vector = Vector or {}
+Quaternion = Quaternion or {}
+logger = logger or {}
+bulletCrate = bulletCrate or {}
+
+gunGiver.giveGun =
+    function()
+    if gunGiver.stats == nil then
+        gunGiver.stats = Space.Shared.GetGlobal(channel, 'stats')
+    end
+    local gunData = {
+        gunType = gunGiver.gunType
+    }
+    Space.Shared.CallFunction(channel, 'giveGun', {gunData})
+    logger.log('network sent, invoking give bullets')
+    bulletCrate.tryGive(false)
+    logger.log('complete')
+end
+
+-- gunGiver.onReceive =
+--     function(arguments)
+--     logger.log('gunGiver.onReceive')
+--     local data = arguments.Message
+--     logger.log('data', data)
+--     if data['command'] == 'giveGun' then
+--         local gunData = {
+--             gunType = gunGiver.gunType
+--         }
+--         logger.log('sending giveGun', gunData)
+--         logger.log('on channel', channel .. '.' .. data.avatarName)
+--         Space.Shared.CallBroadcastFunction(channel .. '.' .. data.avatarName, 'giveGun', {gunData})
+--     elseif data['command'] == 'changeGun' then
+--         local gunData = {
+--             gunType = gunGiver.gunType
+--         }
+--         logger.log('sending changeGun', gunData)
+--         logger.log('on channel', channel .. '.' .. data.avatarName)
+--         Space.Shared.CallBroadcastFunction(channel .. '.' .. data.avatarName, 'changeGun', {gunData})
+--     end
+-- end
+
+gunGiver.queryBullets = function()
+    local hitData = {}
+    hitData['command'] = 'check'
+    hitData['type'] = gunGiver.bulletType
+    hitData['bullet'] = gunGiver.bullet
+    Space.Shared.CallBroadcastFunction(channel, 'rezBullet', {hitData})
+end
+
+gunGiver.init = function()
+    local weapons = Space.Shared.GetGlobal(channel, 'weapons')
+    local createNew = false
+    if weapons == nil then
+        createNew = true
+        weapons = {}
+    end
+    if weapons[gunGiver.gunType] == nil then
+        weapons[gunGiver.gunType] = {
+            gun = gunGiver.gun,
+            gunMouselook = gunGiver.gunMouselook,
+            gunRemote = gunGiver.gunRemote,
+            gunType = gunGiver.gunType,
+            bulletType = bulletCrate.bulletType,
+            bullet = gunGiver.bullet,
+            gunBarIcon = gunGiver.gunBarIcon,
+            gunBarOrder = gunGiver.gunBarOrder,
+            animator = gunGiver.animator
+        }
+    end
+    if createNew then
+        Space.Shared.SetGlobal(channel, 'weapons', weapons)
+    end
+
+    if gunGiver.animator == nil then
+        logger.log("no animator in class")
+    end
+    if weapons[gunGiver.gunType].animator == nil then
+        logger.log("no animator on weapon")
+    end
+
+    -- gunGiver.globalChannel = channel .. '.' .. tostring(Space.Host.ExecutingObject.Root.GlobalID)
+    -- logger.log('listening on network channel', gunGiver.globalChannel, true)
+    -- Space.Network.SubscribeToNetwork(gunGiver.globalChannel, gunGiver.onReceive)
+
+    Space.Shared.RegisterBroadcastFunction(channel, "queryBullets", gunGiver.queryBullets)
+
+    local hitData = {}
+    hitData['command'] = 'check'
+    hitData['type'] = gunGiver.bulletType
+    hitData['bullet'] = gunGiver.bullet
+    Space.Shared.CallBroadcastFunction(channel, 'rezBullet', {hitData})
+end
+
+Space.Host.StartCoroutine(gunGiver.init, nil, "GunGiver init")
+
+function giveGun()
+    Space.Host.StartCoroutine(gunGiver.giveGun, nil, "giveGun")
+end

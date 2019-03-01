@@ -1,0 +1,37 @@
+local channel = 'space.sine.fps'
+
+landmark = landmark or {}
+
+logger = logger or {}
+
+landmark.availableDestinations = {}
+
+landmark.teleportSpawn = function()
+    if #landmark.availableDestinations > 0 then
+        logger.log("destinations available", landmark.availableDestinations)
+        local index = math.random(1, #landmark.availableDestinations)
+        logger.log("teleporting to", index)
+        local dest = landmark.availableDestinations[index]
+        logger.log("destination settings", dest)
+        Space.Scene.PlayerAvatar.Teleport(dest.position, dest.rotation)
+    else
+        logger.log("no destination available")
+        Space.Dialogues.SendLocalChat("No spawn point available", "FPS Safe Zone")
+    end
+end
+
+landmark.addAvailableDestination = function(data)
+    logger.log("Adding destination", data)
+    landmark.availableDestinations[#landmark.availableDestinations + 1] = data
+end
+
+function enter()
+    logger.log("querying destinations")
+    landmark.availableDestinations = {}
+    local data = {}
+    data.team = landmark.team
+    Space.Shared.CallBroadcastFunction(channel, 'getSafezones', {data})
+    Space.Host.InvokeDelayed(landmark.teleportSpawn, 0.1)
+end
+
+Space.Shared.RegisterBroadcastFunction(channel, 'availableSafezone', landmark.addAvailableDestination)
