@@ -33,17 +33,19 @@ npcFollower.follow = function()
 end
 
 npcFollower.setTargetPosition = function(targetPos, currentPos)
-    -- logger.log('setting target position', position)
-    if not Space.Host.ExecutingObject.NavMeshAgent.Enabled then
-        Space.Host.ExecutingObject.NavMeshAgent.Enabled = true+
-        coroutine.yield(0)
-    end
+    if not damage.dead then
+        -- logger.log('setting target position', position)
+        if not Space.Host.ExecutingObject.NavMeshAgent.Enabled then
+            Space.Host.ExecutingObject.NavMeshAgent.Enabled = true
+        -- coroutine.yield(0)
+        end
 
-    Space.Host.ExecutingObject.WorldPosition = currentPos
-    if Space.Host.ExecutingObject.NavMeshAgent.IsOnNavMesh then
-        Space.Host.ExecutingObject.NavMeshAgent.SetDestination(targetPos)
+        Space.Host.ExecutingObject.WorldPosition = currentPos
+        if Space.Host.ExecutingObject.NavMeshAgent.IsOnNavMesh then
+            Space.Host.ExecutingObject.NavMeshAgent.SetDestination(targetPos)
+        end
+        npcFollower.targetPos = targetPos
     end
-    npcFollower.targetPos = targetPos
 end
 
 npcFollower.handleMessage = function(data)
@@ -161,6 +163,4 @@ npcFollower.setup = function()
     Space.Host.StartCoroutine(npcFollower.UpdateSpeed, nil, 'npcFollower UpdateSpeed')
 end
 
-logger.enabled = true
--- npcFollower.setup()
 npcFollower.init()

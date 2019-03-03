@@ -5,8 +5,8 @@ leaderboard = leaderboard or {}
 logger = logger or {}
 
 leaderboard.handleBroadcast = function(data)
+    logger.log('leaderboard.handleBroadcast', data)
     if data.command == 'updateGlobalBoard' then
-        logger.log('leaderboard.handleBroadcast', data)
         leaderboard.update(data)
     end
 end
@@ -59,7 +59,7 @@ leaderboard.init = function()
     if Space.InEditor then
         Space.Shared.RegisterBroadcastFunction(channel, 'client', leaderboard.handleBroadcast)
     else
-        Space.Network.SubscribeToNetwork(channel .. '.board.updateGlobalBoard', leaderboard.handleNetworkUpdate)
+        Space.Network.SubscribeToNetwork(channel .. '.client.updateGlobalBoard', leaderboard.handleNetworkUpdate)
     end
 end
 

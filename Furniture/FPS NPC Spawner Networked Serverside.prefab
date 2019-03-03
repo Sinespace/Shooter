@@ -9,31 +9,31 @@ Prefab:
     m_Modifications: []
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
-  m_RootGameObject: {fileID: 1793621427533228}
+  m_RootGameObject: {fileID: 1623527676282524}
   m_IsPrefabParent: 1
---- !u!1 &1793621427533228
+--- !u!1 &1623527676282524
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 5
   m_Component:
-  - component: {fileID: 4275440895061392}
-  - component: {fileID: 114236060713313554}
-  - component: {fileID: 114541253214921130}
+  - component: {fileID: 4552164086824980}
+  - component: {fileID: 114944461379034316}
+  - component: {fileID: 114924001070906416}
   m_Layer: 0
-  m_Name: FPS King of the Hill Serverside
+  m_Name: FPS NPC Spawner Networked Serverside
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &4275440895061392
+--- !u!4 &4552164086824980
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1793621427533228}
+  m_GameObject: {fileID: 1623527676282524}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 21.972542, y: 0.8889649, z: 0.18307722}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -41,25 +41,12 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &114236060713313554
+--- !u!114 &114924001070906416
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1793621427533228}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9c4ed85b2ace4d340871ea4dbc90602b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ClassID: space.sine.fps.koth
-  Script: {fileID: 11400000, guid: 4417546151cf759439ef357b487df4ee, type: 3}
---- !u!114 &114541253214921130
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1793621427533228}
+  m_GameObject: {fileID: 1623527676282524}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5513f562b7975a542937afd116042bbe, type: 3}
@@ -71,8 +58,8 @@ MonoBehaviour:
   InworldCustomisation: 3
   Description:
     Language: 10
-    Name: FPS King of the Hill Serverside
-    Description: FPS King of the Hill Serverside
+    Name: FPS NPC Spawner Serverside
+    Description: FPS NPC Spawner Networked Serverside
     Brand: dotEnterprise
     Instructions: 
     ReleaseNotes: 
@@ -118,4 +105,17 @@ MonoBehaviour:
     HorrorThemes: 0
     IllicitDrugReferences: 0
     ExplicitOrAdultContent: 0
-  ID: 2121572
+  ID: 2122057
+--- !u!114 &114944461379034316
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1623527676282524}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c4ed85b2ace4d340871ea4dbc90602b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ClassID: space.sine.fps.npcspawner
+  Script: {fileID: 11400000, guid: b02792ab1c463364281014c0c89617c0, type: 3}

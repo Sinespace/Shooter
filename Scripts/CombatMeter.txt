@@ -161,7 +161,7 @@ meter.sortOrder = function(record1, record2)
 end
 
 meter.activateGun = function(index)
-    logger.log('meter.activateGun', index)
+    -- logger.log('meter.activateGun', index)
     if meter.sortedBar ~= nil and meter.sortedBar[index] ~= nil and meter.activeGun ~= index then
         logger.log('cleanup')
         for k, v in pairs(meter.gunBar) do
@@ -175,7 +175,7 @@ meter.activateGun = function(index)
                 v.icon.LocalScale = Vector.New(1, 1, 1)
             end
         end
-        logger.log('sorted source', meter.sortedBar[index])
+        -- logger.log('sorted source', meter.sortedBar[index])
         stats.gunType = meter.sortedBar[index].gunType
         stats.bulletType = meter.sortedBar[index].bulletType
         if meter.sortedBar[index].gun ~= nil then
@@ -192,15 +192,15 @@ meter.activateGun = function(index)
         end
         meter.sortedBar[index].icon.LocalScale = Vector.New(1.2, 1.2, 1.2)
         meter.bullets.Text = tostring(stats.bullets[stats.bulletType])
-        logger.log('meter.activateGun activating animator')
+        -- logger.log('meter.activateGun activating animator')
         Space.Scene.PlayerAvatar.Skeleton.Animator.Controller = meter.sortedBar[index].animator
-        logger.log('meter.activateGun complete')
+        -- logger.log('meter.activateGun complete')
         meter.activeGun = index
     end
 end
 
 meter.refreshGunBar = function(activeGun)
-    logger.log('gunbar before', stats.gunBar)
+    -- logger.log('gunbar before', stats.gunBar)
     local index = 1
     meter.sortedBar = {}
     for k, v in pairs(meter.gunBar) do
@@ -210,14 +210,10 @@ meter.refreshGunBar = function(activeGun)
         index = index + 1
     end
     table.sort(meter.sortedBar, meter.sortOrder)
-    logger.log('gunbar after', meter.sortedBar)
+    -- logger.log('gunbar after', meter.sortedBar)
     index = 1
     for i = 1, #meter.sortedBar, 1 do
         local k = meter.sortedBar[i].name
-        -- if meter.gunBar[k] == nil then
-        --     logger.log('adding', sortedBar[i], true)
-        --     meter.gunBar[k] = {}
-        -- end
         meter.gunBar[k].icon.SetSiblingIndex(index)
         meter.gunBar[k].index = index
         if meter.gunBar[k].gunType == activeGun then
@@ -248,8 +244,7 @@ meter.cloneWeapon = function(weapon)
 end
 
 meter.handleGiveGun = function(gunData)
-    logger.log('meter.handleGiveGun', gunData)
-    -- HANDLE REMOTE GUN DISPLAY
+    -- logger.log('meter.handleGiveGun', gunData)
     for k, v in pairs(meter.gunBar) do
         if v.gunType ~= gunData.gunType and v.gun ~= nil then
             v.gun.Active = false
@@ -257,16 +252,16 @@ meter.handleGiveGun = function(gunData)
             v.icon.LocalScale = Vector.New(1, 1, 1)
         end
     end
-    logger.log('checkign for existing gun')
+    -- logger.log('checkign for existing gun')
     if meter.gunBar[gunData.gunType] ~= nil then
-        logger.log('gun already in gunbar')
+        -- logger.log('gun already in gunbar')
         if meter.gunBar[gunData.gunType].gun == nil or not meter.gunBar[gunData.gunType].gun.Alive then
-            logger.log('cleanup 1')
+            -- logger.log('cleanup 1')
             meter.sortedBar[meter.gunBar[gunData.gunType].index].icon.Destroy()
             meter.sortedBar[meter.gunBar[gunData.gunType].index] = nil
             meter.gunBar[gunData.gunType] = nil
         elseif meter.gunBar[gunData.gunType].gunMouse == nil or not meter.gunBar[gunData.gunType].gunMouse.Alive then
-            logger.log('cleanup 2')
+            -- logger.log('cleanup 2')
             meter.sortedBar[meter.gunBar[gunData.gunType].index].icon.Destroy()
             meter.sortedBar[meter.gunBar[gunData.gunType].index] = nil
             meter.gunBar[gunData.gunType] = nil
@@ -274,7 +269,7 @@ meter.handleGiveGun = function(gunData)
     end
     coroutine.yield(0)
     if meter.gunBar[gunData.gunType] == nil then
-        logger.log('meter.handleGiveGun gunbar nil', gunData)
+        -- logger.log('meter.handleGiveGun gunbar nil', gunData)
         local weapons = Space.Shared.GetGlobal(channel, 'weapons')
 
         local weapon = meter.cloneWeapon(weapons[gunData.gunType])
@@ -283,10 +278,7 @@ meter.handleGiveGun = function(gunData)
         meter.gunBar[weapon.gunType] = weapon
 
         local bone = Space.Scene.PlayerAvatar.FindBone('RightHand')
-        -- local arm = Space.Scene.PlayerAvatar.FindBone('RightLowerArm')
-        -- local tmpRot = Quaternion.LookRotation((arm.LocalPosition - bone.LocalPosition).Normalised)
-        -- logger.log("tmpRot", tmpRot)
-        -- logger.log("tmpRot Euler", tmpRot.EulerAngles)
+
         local instance = Space.Scene.CreateGameObject(weapon.gun)
         instance.LocalPosition = Vector.New(0, 0, 0)
 
@@ -304,7 +296,6 @@ meter.handleGiveGun = function(gunData)
         end
 
         instance.Active = not Space.Input.MouseLook
-        -- stats.gun = instance
         meter.gunBar[weapon.gunType].gun = instance
         coroutine.yield(0)
 
@@ -313,7 +304,6 @@ meter.handleGiveGun = function(gunData)
         instance.LocalPosition = Vector.New(0, 0, 0)
         instance.LocalRotation = Quaternion.New(0, 90, 0, 0)
         instance.Active = Space.Input.MouseLook
-        -- stats.gunMouse = instance
         meter.gunBar[weapon.gunType].gunMouse = instance
 
         coroutine.yield(0)
@@ -328,7 +318,7 @@ meter.handleGiveGun = function(gunData)
             stats.bullets[weapon.bulletType] = 0
         end
 
-        logger.log('preparing network')
+        -- logger.log('preparing network')
         local data = {}
         data['command'] = 'giveGun'
         data['gunType'] = gunData.gunType
@@ -354,27 +344,17 @@ meter.handleGiveGun = function(gunData)
         coroutine.yield(0)
         meter.updateMeter()
     else
-        logger.log('meter.handleGiveGun gunbar not nil')
+        -- logger.log('meter.handleGiveGun gunbar not nil')
         meter.activateGun(meter.gunBar[gunData.gunType].index)
-        -- meter.activeGun = meter.gunBar[gunData.gunType].index
-        -- stats.gunType = meter.gunBar[gunData.gunType].gunType
-        -- stats.bulletType = meter.gunBar[gunData.gunType].bulletType
-        -- if meter.gunBar[gunData.gunType].icon ~= nil then
-        --     meter.gunBar[gunData.gunType].icon.LocalScale = Vector.New(1.2, 1.2, 1.2)
-        -- end
-        -- meter.bullets.Text = tostring(stats.bullets[stats.bulletType])
 
-        -- coroutine.yield(0)
-        -- Space.Scene.PlayerAvatar.Skeleton.Animator.Controller = meter.gunBar[gunData.gunType].animator
-
-        logger.log('preparing network')
+        -- logger.log('preparing network')
         local data = {}
         data['command'] = 'changeGun'
         data['gunType'] = gunData.gunType
         data['avatar'] = Space.Scene.PlayerAvatar.ID
         data['avatarName'] = Space.Scene.PlayerAvatar.Username
-        logger.log('data', data)
-        logger.log('sending on channel', channel)
+        -- logger.log('data', data)
+        -- logger.log('sending on channel', channel)
         Space.Network.SendNetworkMessage(
             channel .. '.' .. tostring(Space.Scene.PlayerAvatar.ID) .. '.changeGun',
             data,
@@ -390,24 +370,13 @@ meter.clearGunBar = function()
     end
     coroutine.yield(0)
     for k, v in pairs(meter.gunBar) do
-        -- v.gun.Active = false
-        -- v.gunMouse.Active = false
         v.gun.Destroy()
-        -- coroutine.yield(0)
         v.gunMouse.Destroy()
-        -- coroutine.yield(0)
     end
     coroutine.yield(0)
     stats.gunBar = {}
     meter.gunBar = {}
     meter.sortedBar = {}
-    -- local data = {}
-    -- data['command'] = 'clearGun'
-    -- data['avatar'] = Space.Scene.PlayerAvatar.ID
-    -- data['avatarName'] = Space.Scene.PlayerAvatar.Username
-    -- logger.log('data', data)
-    -- logger.log('sending on channel', channel)
-    -- Space.Network.SendNetworkMessage(channel, data, false)
 end
 
 meter.giveBullets = function(data)
@@ -457,8 +426,6 @@ meter.takeNetworkHit = function(message)
                 Space.Host.InvokeEvent('damage')
             end
         end
-    -- elseif data.command == 'spawnerToggle' then
-    --     Space.Shared.SetGlobal(channel, 'spawnerDisabled', data.state)
     end
 end
 
@@ -622,7 +589,7 @@ meter.respawnAtLandingzone = function()
         stats.gunMouse = nil
     end
 
-    logger.log('respawnAtLandingzone teleporting to safezone')
+    -- logger.log('respawnAtLandingzone teleporting to safezone')
     meter.spawnAtLandingzone()
 
     meter.dead = false
@@ -640,13 +607,13 @@ end
 
 meter.getOffset = function(point)
     local distance = math.random(point.spawnMaxRange - point.spawnMinRange) + point.spawnMinRange
-    logger.log('distance', distance)
+    -- logger.log('distance', distance)
     local degree = math.random(360) / 180 * math.pi
-    logger.log('degree', degree)
+    -- logger.log('degree', degree)
     local offX = math.sin(degree) * distance
-    logger.log('offX', offX)
+    -- logger.log('offX', offX)
     local offZ = math.cos(degree) * distance
-    logger.log('offZ', offZ)
+    -- logger.log('offZ', offZ)
     local offset = Vector.New(offX, 0, offZ)
     return offset
 end
@@ -654,6 +621,7 @@ end
 meter.spawnAtLandingzone = function()
     logger.log('meter.spawnAtLandingzone teleporting to safezone')
     Space.Scene.PlayerAvatar.Teleport(meter.respawn.WorldPosition + meter.getOffset(meter), meter.respawn.WorldRotation)
+    meter.updateMeter()
 end
 
 meter.enterSafe = function()
@@ -668,14 +636,6 @@ meter.enterSafe = function()
         data,
         false
     )
-    -- if stats.gun ~= nil then
-    --     logger.log('meter.enterSafe gun')
-    --     stats.gun.Active = false
-    -- end
-    -- if stats.gunMouse ~= nil then
-    --     logger.log('meter.enterSafe gunMouse')
-    --     stats.gunMouse.Active = false
-    -- end
     Space.Input.MouseLook = false
     if Space.Scene.PlayerAvatar.Skeleton ~= nil then
         logger.log('meter.enterSafe skeleton')
@@ -684,7 +644,7 @@ meter.enterSafe = function()
 end
 
 meter.leaveSafe = function()
-    logger.log('meter.leaveSafe')
+    -- logger.log('meter.leaveSafe')
     local data = {}
     data.command = 'showMeter'
     data.avatar = Space.Scene.PlayerAvatar.ID
@@ -702,7 +662,7 @@ meter.endTeleportEffect = function()
 end
 
 meter.leaveSafeTeleport = function()
-    logger.log('meter.leaveSafeTeleport')
+    -- logger.log('meter.leaveSafeTeleport')
     local points = Space.Shared.GetGlobal(channel, 'spawnpoints') or {}
     meter.availableDestinations = {}
     for i = 1, #points, 1 do
@@ -714,18 +674,18 @@ meter.leaveSafeTeleport = function()
         end
     end
     if #meter.availableDestinations > 0 then
-        logger.log('destinations available', meter.availableDestinations)
+        -- logger.log('destinations available', meter.availableDestinations)
         local index = math.random(1, #meter.availableDestinations)
-        logger.log('teleporting to', index)
+        -- logger.log('teleporting to', index)
         local dest = meter.availableDestinations[index]
-        logger.log('destination settings', dest)
+        -- logger.log('destination settings', dest)
 
         local offset = meter.getOffset(dest)
         Space.Host.GetReference('teleportStart').WorldPosition = Space.Scene.PlayerAvatar.GameObject.WorldPosition
         Space.Host.GetReference('teleportEnd').WorldPosition = dest.position + offset
         Space.Host.InvokeEvent('teleportStart')
         Space.Host.InvokeDelayed(meter.endTeleportEffect, meter.teleportEffectDuration)
-        logger.log('teleporting from safezone')
+        -- logger.log('teleporting from safezone')
         Space.Scene.PlayerAvatar.Teleport(dest.position + offset, dest.rotation)
         meter.leaveSafe()
     else
@@ -737,8 +697,6 @@ end
 meter.OnUpdate = function()
     if stats ~= nil then
         if not meter.safe and not meter.dead then
-            -- gun switching requires the gun config being stores for all guns, not just the active
-            -- update gungiver and move all gun giving activities into combat meter
             if Space.Input.GetKeyDown('1') and meter.activeGun ~= 1 then
                 meter.activateGun(1)
             elseif Space.Input.GetKeyDown('2') and meter.activeGun ~= 2 then
@@ -760,10 +718,7 @@ meter.OnUpdate = function()
             end
         end
     end
-    -- end
 
-    -- meter.handleView = function()
-    --     while true do
     if not meter.safe and not meter.dead and stats.gunType ~= nil and stats.gunType ~= '' then
         if meter.gunBar[stats.gunType] ~= nil then
             if Space.Input.MouseLook and meter.lastView ~= 2 then
@@ -806,9 +761,7 @@ meter.OnUpdate = function()
             logger.log('meter.handleView end')
         end
     end
-    -- coroutine.yield(0.1)
 end
--- end
 
 meter.handleServerMessage = function(arguments)
     meter.handleServerBroadcast(arguments.Message)
@@ -872,7 +825,6 @@ meter.init = function()
     if meter.isInit == false then
         -- Space.Host.StartCoroutine(meter.handleView, nil, "meter.handleView")
         meter.isInit = true
-        meter.spawnAtLandingzone()
 
         meter.userChannel = channel .. '.' .. tostring(Space.Scene.PlayerAvatar.ID)
         logger.log('userChannel', meter.userChannel)
@@ -918,6 +870,8 @@ meter.init = function()
         Space.Host.StartCoroutine(meter.healthInitializer, nil, 'meter.healthInitializer')
 
         Space.Scene.PlayerAvatar.OnAvatarReload(meter.onAvatarReload)
+
+        meter.spawnAtLandingzone()
     else
         meter.testStats()
     end

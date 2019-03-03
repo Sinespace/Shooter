@@ -149,25 +149,39 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BundleGroups:
   - Mode: 0
-    ModeValue: 1
+    ModeValue: 0
     Items:
-    - ItemID: 2119452
-      Weight: 1
-    - ItemID: 2120621
-      Weight: 1
-    - ItemID: 2120761
-      Weight: 1
-    - ItemID: 2119450
-      Weight: 1
     - ItemID: 2120622
       Weight: 1
-    - ItemID: 2120790
+    - ItemID: 2120147
+      Weight: 1
+    - ItemID: 2122003
+      Weight: 1
+    - ItemID: 2121850
       Weight: 1
     - ItemID: 2120343
       Weight: 1
+    - ItemID: 2120620
+      Weight: 1
+    - ItemID: 2122057
+      Weight: 1
+    - ItemID: 2120761
+      Weight: 1
     - ItemID: 2119810
+      Weight: 1
+    - ItemID: 2119452
+      Weight: 1
+    - ItemID: 2120790
+      Weight: 1
+    - ItemID: 2119450
+      Weight: 1
+    - ItemID: 2121849
+      Weight: 1
+    - ItemID: 2120556
       Weight: 1
     - ItemID: 2120760
       Weight: 1
-    - ItemID: 2120556
+    - ItemID: 2121572
+      Weight: 1
+    - ItemID: 2120621
       Weight: 1

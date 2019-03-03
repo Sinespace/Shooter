@@ -345,15 +345,15 @@ MonoBehaviour:
   BrandIcon: {fileID: 2800000, guid: e2384d489a1d1c6468b7ebb711c6bb16, type: 3}
   YouTubeURL: 
   HomepageURL: 
-  NotForSale: 1
-  PriceSilver: 1000
-  PriceGold: 10
+  NotForSale: 0
+  PriceSilver: 0
+  PriceGold: 0
   AllowUseInPromotions: 0
   MaxDiscountInSales: 0
   MaxOwned: 0
   MaxCopiesPerItem: 0
   DerivationID: 0
-  DerivationAllowed: 0
+  DerivationAllowed: 1
   DerivationPack: 
   Rating: 2
   Category: Furniture/Game
@@ -373,7 +373,7 @@ MonoBehaviour:
   Flags:
     ViolenceAndGore: 1
     Alcohol: 0
-    HorrorThemes: 1
+    HorrorThemes: 0
     IllicitDrugReferences: 0
     ExplicitOrAdultContent: 0
   ID: 2120556

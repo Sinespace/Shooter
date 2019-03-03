@@ -128,9 +128,9 @@ leaderboard.init = function()
         Space.Shared.RegisterBroadcastFunction(channel, 'client', leaderboard.handleBroadcast)
         Space.Host.InvokeEvent('showSettingsButton')
     else
-        Space.Network.SubscribeToNetwork(channel .. '.board.updateBoard', leaderboard.handleNetworkUpdate)
-        Space.Network.SubscribeToNetwork(channel .. '.board.startRound', leaderboard.handleNetworkStartRound)
-        Space.Network.SubscribeToNetwork(channel .. '.board.endRound', leaderboard.handleNetworkEndRound)
+        Space.Network.SubscribeToNetwork(channel .. '.client.updateBoard', leaderboard.handleNetworkUpdate)
+        Space.Network.SubscribeToNetwork(channel .. '.client.startRound', leaderboard.handleNetworkStartRound)
+        Space.Network.SubscribeToNetwork(channel .. '.client.endRound', leaderboard.handleNetworkEndRound)
         if Space.Scene.PlayerIsOwner then
             Space.Host.InvokeEvent('showSettingsButton')
         end

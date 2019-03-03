@@ -52,7 +52,7 @@ boardServer.sendAll = function(command, data)
     if boardServer.IsEditor() then
         Space.Shared.CallBroadcastFunction(boardServer.channel, 'client', {data})
     else
-        Space.SendMessageToAllClientScripts(boardServer.channel .. '.board.' .. command, data)
+        Space.SendMessageToAllClientScripts(boardServer.channel .. '.client.' .. command, data)
     end
 end
 
@@ -62,7 +62,7 @@ boardServer.sendOne = function(id, command, data)
     if boardServer.IsEditor() then
         Space.Shared.CallBroadcastFunction(boardServer.channel, 'client', {data})
     else
-        Space.SendMessageToClientScripts(id, boardServer.channel .. '.board.' .. command, data)
+        Space.SendMessageToClientScripts(id, boardServer.channel .. '.client.' .. command, data)
     end
 end
 
@@ -94,15 +94,23 @@ boardServer.handleMessage = function(data)
 end
 
 boardServer.startRoundWatcher = function()
-    if boardServer.IsEditor() then
-        Space.Host.StartCoroutine(boardServer.roundWatcher, nil, 'boardServer.roundWatcher')
+    if not boardServer.roundWatcherRunning then
+        if boardServer.IsEditor() then
+            Space.Host.StartCoroutine(boardServer.roundWatcher, nil, 'boardServer.roundWatcher')
+        else
+            Space.StartCoroutine(boardServer.roundWatcher, nil, 'boardServer.roundWatcher')
+        end
     else
-        Space.StartCoroutine(boardServer.roundWatcher, nil, 'boardServer.roundWatcher')
+        logger.log('roundWatcher prevent running')
     end
 end
 
 boardServer.roundWatcher = function()
     logger.log('boardServer.roundWatcher', boardServer.settings)
+    if boardServer.roundWatcherRunning then
+        logger.log('boardServer.roundWatcherRunning')
+    end
+    boardServer.roundWatcherRunning = true
     local finished = false
     local start = boardServer.getTime()
     local highPoint = 0
@@ -142,6 +150,9 @@ boardServer.roundWatcher = function()
     data.ranking = boardServer.players
     boardServer.sendAll('endRound', data)
 
+    if boardServer.globalLeader == nil then
+        boardServer.globalLeader = {}
+    end
     for k, v in pairs(boardServer.players) do
         if boardServer.globalLeader[k] == nil then
             boardServer.globalLeader[k] = v
@@ -154,12 +165,13 @@ boardServer.roundWatcher = function()
     end
     boardServer.updateGlobalRanking()
     if not boardServer.IsEditor() then
-        Space.SetRegionValue(
+        Space.Database.SetRegionValue(
             boardServer.channel .. '.leaderboard',
             boardServer.globalLeader,
             boardServer.onSetLeaderboardComplete
         )
     end
+    boardServer.roundWatcherRunning = false
 end
 
 boardServer.onSetLeaderboardComplete = function(result)
@@ -211,6 +223,15 @@ boardServer.onGetLeaderboard = function(data)
     boardServer.updateGlobalRanking()
 end
 
+boardServer.fallback = function()
+    coroutine.yield(2)
+    if not boardServer.loaded then
+    logger.log("boardServer.fallback")
+        boardServer.globalLeader = {}
+        boardServer.updateGlobalRanking()
+    end
+end
+
 boardServer.init = function()
     logger.log('boardServer.init')
     if boardServer.IsEditor() then
@@ -218,7 +239,12 @@ boardServer.init = function()
     end
 
     if not boardServer.IsEditor() then
-        Space.GetRegionValue(boardServer.channel .. '.leaderboard', boardServer.onGetLeaderboard)
+        logger.log('querying database for leaderboard')
+        Space.StartCoroutine(boardServer.fallback, nil, 'boardServer.fallback')
+        Space.Database.GetRegionValue(boardServer.channel .. '.leaderboard', boardServer.onGetLeaderboard)
+    else
+        boardServer.globalLeader = {}
+        boardServer.updateGlobalRanking()
     end
 
     boardServer.updateRanking()

@@ -225,7 +225,7 @@ kothServer.init = function()
     -- else
     --     Space.Network.SubscribeToNetwork(kothServer.channel, kothServer.handleNetwork)
     end
-    kothServer.sendAll(kothServer.channel .. '.koth.' .. 'reregister', {})
+    kothServer.sendAll('reregister', {})
 
     if kothServer.IsEditor() then
         Space.Host.StartCoroutine(kothServer.loopHills, nil, 'kothServer.loopHills')

@@ -1,0 +1,228 @@
+channel = channel or 'space.sine.fps'
+
+npcSpawner = {}
+
+npcSpawner.npc = Space.GetResource('npc')
+
+npcSpawner.spawnInterval = npcSpawnInterval or 5
+
+npcSpawner.spawnMinRange = npcSpawnMinRange or 1
+
+npcSpawner.spawnMaxRange = npcSpawnMaxRange or 5
+
+npcSpawner.poolSize = npcPoolSize or 5
+npcSpawner.poolTtl = npcLifetime or 20
+npcSpawner.npcPool = {}
+
+npcSpawner.nextTime = 0
+npcSpawner.root = Space.Host.ExecutingObject.Root
+
+npcSpawner.sequence = 0
+
+logger = logger or {}
+
+npcSpawner.sendServerMessage = function(channel, data)
+    --logger.log('sendServerMessage channel', channel)
+    logger.log('sendServerMessage data', data)
+    if Space.InEditor then
+        -- logger.log('in editor, sending local')
+        Space.Shared.CallBroadcastFunction(channel, 'server', {data})
+    else
+        -- logger.log('on server, sending network')
+        npcSpawner.sequence = npcSpawner.sequence + 1
+        data.sender = Space.Host.ExecutingObject.GlobalID
+        data.sequence = npcSpawner.sequence
+        Space.Network.SendNetworkMessage(channel .. '.' .. data.command, data, true)
+    end
+end
+
+npcSpawner.poolManager = function()
+    logger.log('npcSpawner.poolManager starting')
+    local botnames = {}
+    for i = 1, npcSpawner.poolSize, 1 do
+        local tmp = Space.Scene.CreateGameObject(npcSpawner.npc)
+        tmp.Active = false
+        tmp.Name = 'bot_' .. Space.String.GenerateGUID()
+        local item = {}
+        item.npc = tmp
+        item.killAt = 0
+        npcSpawner.npcPool[i] = item
+        botnames[i] = tmp.Name
+    end
+    logger.log('npcSpawner.poolManager sending registration')
+    npcSpawner.register(botnames)
+    logger.log('npcSpawner.poolManager starting cleanup')
+    while true do
+        for i = 1, npcSpawner.poolSize, 1 do
+            local item = npcSpawner.npcPool[i]
+            if item.killAt < Space.Time and item.active then
+                Space.Shared.CallFunction(channel .. '.' .. item.npc.Name, 'reset', {})
+                item.active = false
+            end
+        end
+        coroutine.yield(1)
+    end
+end
+
+npcSpawner.rezNpc = function(data)
+    local item = npcSpawner.npcPool[data['index']]
+    logger.log('activating', item.npc.Name)
+    item.npc.WorldPosition = Space.Host.ExecutingObject.WorldPosition + data['position']
+
+    if item.active then
+        Space.Shared.CallFunction(channel .. '.' .. item.npc.Name, 'reset', {})
+        item.active = false
+    end
+    coroutine.yield(0)
+    item.active = true
+    Space.Shared.CallFunction(channel .. '.' .. item.npc.Name, 'restart', {})
+    Space.Host.InvokeEvent('spawn')
+    item.killAt = Space.Time + npcSpawner.poolTtl
+end
+
+npcSpawner.handleMessage = function(data)
+    logger.log('handleMessage got data', data, true)
+    if data['command'] == 'spawn' then
+        Space.Host.StartCoroutine(npcSpawner.rezNpc, data)
+    elseif data['command'] == 'reregister' then
+        local botnames = {}
+        for i = 1, npcSpawner.poolSize, 1 do
+            botnames[i] = npcSpawner.npcPool[i].npc.Name
+        end
+        npcSpawner.sendRegistrationData(botnames)
+    elseif data['command'] == 'startpool' then
+        local botnames = data.botnames
+        if #npcSpawner.npcPool > 0 then
+            for i = 1, #npcSpawner.npcPool, 1 do
+                npcSpawner.npcPool[i].npc.Destroy()
+            end
+        end
+        npcSpawner.npcPool = {}
+        for i = 1, #botnames, 1 do
+            local tmp = Space.Scene.CreateGameObject(npcSpawner.npc)
+            tmp.Active = true
+            tmp.Name = botnames[i]
+            local item = {}
+            item.npc = tmp
+            item.killAt = 0
+            npcSpawner.npcPool[i] = item
+        end
+        npcSpawner.poolInit = true
+    elseif data['command'] == 'killbotserver' then
+        if data['spawner'] == Space.Host.ExecutingObject.Root.Name then
+            for i = 1, npcSpawner.poolSize, 1 do
+                local item = npcSpawner.npcPool[i]
+                if item.npc.Name == data['botName'] then
+                    item.killAt = Space.Time + 10
+                    Space.Shared.CallBroadcastFunction(channel .. '.' .. data['botName'], 'kill', data)
+                end
+            end
+        end
+    end
+end
+
+npcSpawner.onRecieve = function(arguments)
+    logger.log('got network', arguments)
+
+    npcSpawner.handleMessage(arguments.Message)
+end
+
+npcSpawner.onKillbotServer = function(arguments)
+    logger.log('npcSpawner.onKillbotServer', arguments)
+    local data = arguments.Message
+    if data['spawner'] == Space.Host.ExecutingObject.Root.Name then
+        for i = 1, npcSpawner.poolSize, 1 do
+            local item = npcSpawner.npcPool[i]
+            if item.npc.Name == data['botName'] then
+                item.killAt = Space.Time + 10
+                Space.Shared.CallBroadcastFunction(channel .. '.' .. data['botName'], 'kill', data)
+            end
+        end
+    end
+end
+
+npcSpawner.onReRegister = function(arguments)
+    logger.log('npcSpawner.onReRegister', arguments)
+    local data = arguments.Message
+    npcSpawner.sendRegistrationData(botnames)
+end
+
+npcSpawner.sendRegistrationData = function(botnames)
+    logger.log('preparing registration data')
+    local data = {}
+    data['command'] = 'registerspawner'
+    data['id'] = npcSpawner.root.Name
+    data['spawnInterval'] = npcSpawner.spawnInterval
+    data['spawnMinRange'] = npcSpawner.spawnMinRange
+    data['spawnMaxRange'] = npcSpawner.spawnMaxRange
+    data['maxDistance'] = 20.0
+    data['lookHeight'] = 1.5
+    data['attackSpeed'] = 4
+    data['wanderSpeed'] = 2
+    data['meleeRange'] = 1
+    data['position'] = npcSpawner.root.WorldPosition
+    data['poolSize'] = npcSpawner.poolSize
+    data['poolTtl'] = npcSpawner.poolTtl
+    data['botnames'] = botnames
+    logger.log('registration data', data)
+    npcSpawner.sendServerMessage(channel, data)
+    -- Space.Network.SendNetworkMessage(channel, data, true)
+    logger.log('registration sent')
+end
+
+npcSpawner.killBot =
+    function(data)
+    logger.log('killBot', data)
+    for i = 1, #npcSpawner.npcPool, 1 do
+        local item = npcSpawner.npcPool[i]
+        if item.npc.Name == data.name then
+            item.killAt = Space.Time + 10
+            local kb = {}
+            kb.command = 'killbotserver'
+            kb.spawner = Space.Host.ExecutingObject.Root.Name
+            kb.botName = data.name
+            kb.mode = data.mode
+            logger.log('sending bot kill to server', kb)
+            Space.Network.SendNetworkMessage(
+                channel .. '.' .. npcSpawner.root.GlobalID .. '.killbotserver',
+                data,
+                false
+            )
+        end
+    end
+end
+
+npcSpawner.register =
+    function(botnames)
+    logger.log('starting registration')
+    npcSpawner.sendRegistrationData(botnames)
+    logger.log('starting subscribing')
+    if Space.InEditor then
+        Space.Shared.RegisterBroadcastFunction(channel, 'server', npcSpawner.handleMessage)
+        Space.Shared.RegisterBroadcastFunction(
+            channel .. '.' .. npcSpawner.root.Name,
+            'server',
+            npcSpawner.handleMessage
+        )
+    else
+        Space.Network.SubscribeToNetwork(channel, npcSpawner.onRecieve)
+        Space.Network.SubscribeToNetwork(channel .. '.' .. npcSpawner.root.Name, npcSpawner.onRecieve)
+        Space.Network.SubscribeToNetwork(
+            channel .. '.' .. npcSpawner.root.GlobalID .. '.killbotserver',
+            npcSpawner.onKillbotServer
+        )
+    end
+end
+
+npcSpawner.init = function()
+    -- npcSpawner.nextTime = Space.Time + math.random(10)
+
+    -- Space.Host.StartCoroutine(npcSpawner.spawn)
+    -- Space.Host.InvokeDelayed(npcSpawner.register, 0.1)
+
+    Space.Host.StartCoroutine(npcSpawner.poolManager)
+    Space.Shared.RegisterBroadcastFunction(channel, 'killbot', npcSpawner.killBot)
+end
+
+logger.enabled = true
+npcSpawner.init()
