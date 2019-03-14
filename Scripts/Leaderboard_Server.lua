@@ -81,6 +81,9 @@ boardServer.handleMessage = function(data)
     if data.command == 'board' then
         boardServer.players[data.player] = data
         boardServer.updateRanking()
+    elseif data.command == 'reset' then
+        boardServer.players = {}
+        boardServer.reset = true
     elseif data.command == 'saveSettings' then
         logger.log('boardServer.saveSettings', data)
         boardServer.settings = data.settings
@@ -109,13 +112,14 @@ boardServer.roundWatcher = function()
     logger.log('boardServer.roundWatcher', boardServer.settings)
     if boardServer.roundWatcherRunning then
         logger.log('boardServer.roundWatcherRunning')
+        return
     end
     boardServer.roundWatcherRunning = true
     local finished = false
     local start = boardServer.getTime()
     local highPoint = 0
     local highPlay = nil
-    while not finished do
+    while not finished and not boardServer.reset do
         local count = 0
         for k, v in pairs(boardServer.players) do
             count = count + 1
@@ -144,30 +148,52 @@ boardServer.roundWatcher = function()
         coroutine.yield(0.2)
     end
 
+    if boardServer.reset then
+        boardServer.reset = false
+        return
+    end
+
+    -- logger.log("step 1", boardServer)
+    -- for k, v in pairs(boardServer.players) do
+    --     logger.log("player " .. tostring(k), v)
+    -- end
     local data = {}
     data.winner = highPlay
     data.points = highPoint
     data.ranking = boardServer.players
+    -- logger.log("step 1b", data)
     boardServer.sendAll('endRound', data)
 
+    -- logger.log("step 2", boardServer)
     if boardServer.globalLeader == nil then
         boardServer.globalLeader = {}
     end
     for k, v in pairs(boardServer.players) do
-        if boardServer.globalLeader[k] == nil then
-            boardServer.globalLeader[k] = v
+        local index = tostring(k)
+        if boardServer.globalLeader[index] == nil then
+            boardServer.globalLeader[index] = {}
+            boardServer.globalLeader[index].name = v.name
+            boardServer.globalLeader[index].points = v.points
+            boardServer.globalLeader[index].kills = v.kills
+            boardServer.globalLeader[index].avatarKills = v.avatarKills
+            boardServer.globalLeader[index].deaths = v.deaths
         else
-            boardServer.globalLeader[k].points = boardServer.globalLeader[k].points + v.points
-            boardServer.globalLeader[k].kills = boardServer.globalLeader[k].kills + v.kills
-            boardServer.globalLeader[k].avatarKills = boardServer.globalLeader[k].avatarKills + v.avatarKills
-            boardServer.globalLeader[k].deaths = boardServer.globalLeader[k].deaths + v.deaths
+            boardServer.globalLeader[index].points = boardServer.globalLeader[k].points + v.points
+            boardServer.globalLeader[index].kills = boardServer.globalLeader[k].kills + v.kills
+            boardServer.globalLeader[index].avatarKills = boardServer.globalLeader[k].avatarKills + v.avatarKills
+            boardServer.globalLeader[index].deaths = boardServer.globalLeader[k].deaths + v.deaths
         end
     end
+    -- logger.log("step 3", boardServer)
     boardServer.updateGlobalRanking()
+    -- logger.log("step 4", boardServer)
     if not boardServer.IsEditor() then
+        local ser = json.serialize(boardServer.globalLeader)
+        -- logger.log("saving to region test", boardServer)
+        -- logger.log("saving to region", ser)
         Space.Database.SetRegionValue(
             boardServer.channel .. '.leaderboard',
-            boardServer.globalLeader,
+            ser,
             boardServer.onSetLeaderboardComplete
         )
     end
@@ -216,8 +242,11 @@ end
 
 boardServer.onGetLeaderboard = function(data)
     logger.log('boardServer.onGetLeaderboard', data)
-    if data == nil then
+    boardServer.loaded = true
+    if data == nil or data == "" then
         data = {}
+    else
+        data = json.parse(data)
     end
     boardServer.globalLeader = data
     boardServer.updateGlobalRanking()
@@ -226,7 +255,7 @@ end
 boardServer.fallback = function()
     coroutine.yield(2)
     if not boardServer.loaded then
-    logger.log("boardServer.fallback")
+        logger.log("boardServer.fallback")
         boardServer.globalLeader = {}
         boardServer.updateGlobalRanking()
     end
@@ -255,7 +284,7 @@ local function starts_with(str, start)
 end
 
 function OnScriptServerMessage(channel, arguments)
-    logger.log('OnScriptServerMessage', {channel, arguments})
+    --logger.log('OnScriptServerMessage', {channel, arguments})
     if starts_with(channel, boardServer.channel .. '.board') then
         boardServer.handleMessage(arguments)
     end
@@ -265,6 +294,6 @@ function OnAvatarLeave(avatarId)
     boardServer.avatarSceneLeave(avatarId)
 end
 
-logger.enabled = true
+logger.enabled = false
 
 boardServer.init()

@@ -136,6 +136,7 @@ leaderboard.init = function()
         end
     end
 
+    Space.Host.InvokeEvent('endRound')
     leaderboard.updateServerSettings()
 end
 
