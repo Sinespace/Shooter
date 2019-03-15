@@ -107,7 +107,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4433519816653074}
   - component: {fileID: 114029095561987874}
-  - component: {fileID: 114777902303960736}
   m_Layer: 0
   m_Name: FPS Leaderboard
   m_TagString: Untagged
@@ -458,6 +457,7 @@ GameObject:
   - component: {fileID: 4738619979228600}
   - component: {fileID: 114216052244492538}
   - component: {fileID: 114856794633565338}
+  - component: {fileID: 114502996319853562}
   m_Layer: 0
   m_Name: FPS Leaderboard
   m_TagString: Untagged
@@ -1919,6 +1919,19 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: Save
+--- !u!114 &114502996319853562
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1697429283321944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d89de255079e1c848a524fd14eb8ee9d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  VirtualGoodID: 2121849
+  ClassID: space.sine.fps.board
 --- !u!114 &114521246023904778
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2453,19 +2466,6 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: Enter text...
---- !u!114 &114777902303960736
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1224296812869042}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d89de255079e1c848a524fd14eb8ee9d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  VirtualGoodID: 2121849
-  ClassID: space.sine.fps.board
 --- !u!114 &114781445630422922
 MonoBehaviour:
   m_ObjectHideFlags: 1

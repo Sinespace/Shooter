@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 4908581875145240}
   - component: {fileID: 114316119999295026}
   - component: {fileID: 114660681913998966}
+  - component: {fileID: 114942476738957600}
   m_Layer: 0
   m_Name: FPS King of the Hill Zone
   m_TagString: Untagged
@@ -75,7 +76,6 @@ GameObject:
   - component: {fileID: 114937809439966648}
   - component: {fileID: 114245478194776428}
   - component: {fileID: 95138931924763390}
-  - component: {fileID: 114989137527560430}
   m_Layer: 2
   m_Name: King of the Hill zone
   m_TagString: Untagged
@@ -900,12 +900,12 @@ MonoBehaviour:
   ObjectReferences:
   - Name: animator
     Reference: {fileID: 1622327398183170}
---- !u!114 &114989137527560430
+--- !u!114 &114942476738957600
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1622327398183170}
+  m_GameObject: {fileID: 1011268217741448}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d89de255079e1c848a524fd14eb8ee9d, type: 3}

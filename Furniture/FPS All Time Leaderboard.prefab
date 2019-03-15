@@ -128,7 +128,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4471466831549906}
   - component: {fileID: 114826059346444610}
-  - component: {fileID: 114471652908819204}
   m_Layer: 0
   m_Name: FPS All Time Leaderboard
   m_TagString: Untagged
@@ -198,6 +197,7 @@ GameObject:
   - component: {fileID: 4372601315826678}
   - component: {fileID: 114678017601540818}
   - component: {fileID: 114874330135685532}
+  - component: {fileID: 114595994862774776}
   m_Layer: 0
   m_Name: FPS All Time Leaderboard
   m_TagString: Untagged
@@ -698,19 +698,6 @@ MonoBehaviour:
   m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
   m_EffectDistance: {x: 8, y: -8}
   m_UseGraphicAlpha: 0
---- !u!114 &114471652908819204
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1532874264476332}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d89de255079e1c848a524fd14eb8ee9d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  VirtualGoodID: 2121849
-  ClassID: space.sine.fps.board
 --- !u!114 &114488281663191968
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -848,6 +835,19 @@ MonoBehaviour:
     9
 
     10'
+--- !u!114 &114595994862774776
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1659815506717284}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d89de255079e1c848a524fd14eb8ee9d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  VirtualGoodID: 2121849
+  ClassID: space.sine.fps.board
 --- !u!114 &114602494319631330
 MonoBehaviour:
   m_ObjectHideFlags: 1
