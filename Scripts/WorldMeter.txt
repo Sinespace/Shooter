@@ -115,13 +115,22 @@ end
 
 worldMeter.onHideMeter = function(arguments)
     logger.log('worldMeter.onHideMeter', arguments)
-    if worldMeter.gun ~= nil then
+    local hardGun = Space.Host.ExecutingObject.FindInChildren('fpsgun3rd')
+    if hardGun ~= nil and hardGun.Alive then
+        logger.log('found gun child')
+        if worldMeter.gun ~= nil then
+            logger.log('gunchild, active set gun')
+            worldMeter.gun.Active = false
+        end
+        hardGun.Destroy()
+    elseif worldMeter.gun ~= nil then
+        logger.log('no gun child, but active set gun')
         worldMeter.gun.Active = false
     end
     Space.Host.InvokeEvent('hide')
     worldMeter.activeGun = nil
     if Space.Host.ExecutingObject.Root.Avatar.Skeleton ~= nil then
-        logger.log('clearing controller')
+        logger.log('clearing animator controller')
         Space.Host.ExecutingObject.Root.Avatar.Skeleton.Animator.Controller = nil
     end
 end
@@ -166,7 +175,7 @@ worldMeter.onHealthReceive = function(arguments)
     if worldMeter.worldPoints ~= nil then
         worldMeter.worldPoints.UIText.Text = tostring(data['points'])
     end
-    if not Space.Host.ExecutingObject.FindInChildren("fpsgun3rd") then
+    if not Space.Host.ExecutingObject.FindInChildren('fpsgun3rd') then
         logger.log('worldMeter.onHealthReceive gun lost, resetting controller')
         worldMeter.guns[data.gunType] = {}
         -- if worldMeter.gun ~= nil then
@@ -190,7 +199,10 @@ worldMeter.activateGun = function(gunData)
         worldMeter.activeGun = nil
         logger.log('worldMeter.activateGun no active gun, resetting controller')
         Space.Host.ExecutingObject.Root.Avatar.Skeleton.Animator.Controller = nil
-    elseif worldMeter.guns[gunData.gunType] == nil or worldMeter.guns[gunData.gunType].gun == nil or not worldMeter.guns[gunData.gunType].gun.Alive then
+    elseif
+        worldMeter.guns[gunData.gunType] == nil or worldMeter.guns[gunData.gunType].gun == nil or
+            not worldMeter.guns[gunData.gunType].gun.Alive
+     then
         logger.log('new gun type, instantiating')
         local weapons = Space.Shared.GetGlobal(channel, 'weapons')
 
@@ -203,7 +215,7 @@ worldMeter.activateGun = function(gunData)
         local instance = Space.Scene.CreateGameObject(weapon.gunRemote)
 
         instance.LocalPosition = Vector.New(0, 0, 0)
-        instance.Name = "fpsgun3rd"
+        instance.Name = 'fpsgun3rd'
 
         local hinge = avatar.GameObject.FindInChildren('FpsGunHoldRight')
         if hinge ~= nil then
