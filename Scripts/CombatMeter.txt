@@ -246,12 +246,18 @@ end
 meter.handleGiveGun = function(gunData)
     -- logger.log('meter.handleGiveGun', gunData)
     for k, v in pairs(meter.gunBar) do
-        if v.gunType ~= gunData.gunType and v.gun ~= nil then
-            v.gun.Active = false
-            v.gunMouse.Active = false
+        if v.gunType ~= gunData.gunType then
             v.icon.LocalScale = Vector.New(1, 1, 1)
+            if v.gun ~= nil then
+                v.gun.Active = false
+            end
+            if v.gunMouse ~= nil then
+                v.gunMouse.Active = false
+            v.icon.LocalScale = Vector.New(1, 1, 1)
+            end
         end
     end
+    coroutine.yield(0)
     -- logger.log('checkign for existing gun')
     if meter.gunBar[gunData.gunType] ~= nil then
         -- logger.log('gun already in gunbar')
@@ -281,6 +287,7 @@ meter.handleGiveGun = function(gunData)
 
         local instance = Space.Scene.CreateGameObject(weapon.gun)
         instance.LocalPosition = Vector.New(0, 0, 0)
+        instance.Name = 'fps3rdgun'
 
         local hinge = Space.Scene.PlayerAvatar.GameObject.FindInChildren('FpsGunHoldRight')
         if hinge ~= nil then
@@ -304,6 +311,7 @@ meter.handleGiveGun = function(gunData)
         instance.LocalPosition = Vector.New(0, 0, 0)
         instance.LocalRotation = Quaternion.New(0, 90, 0, 0)
         instance.Active = Space.Input.MouseLook
+        instance.Name = 'fpsmousegun'
         meter.gunBar[weapon.gunType].gunMouse = instance
 
         coroutine.yield(0)
@@ -789,6 +797,11 @@ meter.onAvatarReload = function()
     if stats.gunType ~= nil and stats.gunType ~= '' then
         local gunData = {gunType = stats.gunType}
         Space.Host.StartCoroutine(meter.handleGiveGun, gunData, 'onAvatarReload handleGiveGun')
+        Space.Network.SendNetworkMessage(
+            channel .. '.' .. tostring(Space.Scene.PlayerAvatar.ID) .. '.avatarReload',
+            gunData,
+            false
+        )
     end
 end
 
@@ -899,4 +912,8 @@ end
 
 function spawnerToggle()
     meter.toggleSpawner()
+end
+
+function avatarReload()
+    meter.onAvatarReload()
 end

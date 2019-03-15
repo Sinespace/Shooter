@@ -166,7 +166,16 @@ worldMeter.onHealthReceive = function(arguments)
     if worldMeter.worldPoints ~= nil then
         worldMeter.worldPoints.UIText.Text = tostring(data['points'])
     end
-    if worldMeter.activeGun ~= data.gunType and data['health'] > 0 then
+    if not Space.Host.ExecutingObject.FindInChildren("fpsgun3rd") then
+        logger.log('worldMeter.onHealthReceive gun lost, resetting controller')
+        worldMeter.guns[data.gunType] = {}
+        -- if worldMeter.gun ~= nil then
+        --     worldMeter.gun.Active = false
+        -- end
+        -- worldMeter.activeGun = nil
+        Space.Host.ExecutingObject.Root.Avatar.Skeleton.Animator.Controller = nil
+        worldMeter.activateGun(data)
+    elseif worldMeter.activeGun ~= data.gunType and data['health'] > 0 then
         worldMeter.activateGun(data)
     end
 end
@@ -181,7 +190,7 @@ worldMeter.activateGun = function(gunData)
         worldMeter.activeGun = nil
         logger.log('worldMeter.activateGun no active gun, resetting controller')
         Space.Host.ExecutingObject.Root.Avatar.Skeleton.Animator.Controller = nil
-    elseif worldMeter.guns[gunData.gunType] == nil then
+    elseif worldMeter.guns[gunData.gunType] == nil or worldMeter.guns[gunData.gunType].gun == nil or not worldMeter.guns[gunData.gunType].gun.Alive then
         logger.log('new gun type, instantiating')
         local weapons = Space.Shared.GetGlobal(channel, 'weapons')
 
@@ -194,6 +203,7 @@ worldMeter.activateGun = function(gunData)
         local instance = Space.Scene.CreateGameObject(weapon.gunRemote)
 
         instance.LocalPosition = Vector.New(0, 0, 0)
+        instance.Name = "fpsgun3rd"
 
         local hinge = avatar.GameObject.FindInChildren('FpsGunHoldRight')
         if hinge ~= nil then
@@ -213,9 +223,9 @@ worldMeter.activateGun = function(gunData)
         worldMeter.activeGun = weapon.gunType
         worldMeter.guns[weapon.gunType].animator = weapon.animator
 
-        if worldMeter.gun ~= nil then
-            worldMeter.gun.Active = false
-        end
+        -- if worldMeter.gun ~= nil and worldMeter.gun.Alive then
+        --     worldMeter.gun.Active = false
+        -- end
         worldMeter.gun = instance
         logger.log('worldMeter.activateGun active gun, setting controller for gunType', gunData.gunType)
         logger.log('worldMeter.activateGun active gun, gun data is', worldMeter.guns[gunData.gunType])
@@ -273,6 +283,12 @@ worldMeter.hideMeter = function()
     end
 end
 
+worldMeter.onAvatarReload = function(arguments)
+    logger.log('worldMeter.onAvatarReload', arguments)
+    local gunData = arguments.Message
+    worldMeter.activateGun(gunData)
+end
+
 worldMeter.showMeter = function()
     logger.log('worldMeter.showMeter')
     worldMeter.dead = false
@@ -301,6 +317,7 @@ worldMeter.init = function()
     Space.Network.SubscribeToNetwork(worldMeter.networkChannel .. '.respawn', worldMeter.onRespawn)
     Space.Network.SubscribeToNetwork(worldMeter.networkChannel .. '.hideMeter', worldMeter.onHideMeter)
     Space.Network.SubscribeToNetwork(worldMeter.networkChannel .. '.showMeter', worldMeter.onShowMeter)
+    Space.Network.SubscribeToNetwork(worldMeter.networkChannel .. '.changeGun', worldMeter.onAvatarReload)
 
     Space.Network.SubscribeToNetwork(channel, worldMeter.onDummyReceive)
     Space.Shared.RegisterFunction(worldMeter.networkChannel, 'hit', worldMeter.onLocalHitReceive)
