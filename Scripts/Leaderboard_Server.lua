@@ -169,19 +169,23 @@ boardServer.roundWatcher = function()
         boardServer.globalLeader = {}
     end
     for k, v in pairs(boardServer.players) do
-        local index = tostring(k)
-        if boardServer.globalLeader[index] == nil then
-            boardServer.globalLeader[index] = {}
-            boardServer.globalLeader[index].name = v.name
-            boardServer.globalLeader[index].points = v.points
-            boardServer.globalLeader[index].kills = v.kills
-            boardServer.globalLeader[index].avatarKills = v.avatarKills
-            boardServer.globalLeader[index].deaths = v.deaths
-        else
-            boardServer.globalLeader[index].points = boardServer.globalLeader[k].points + v.points
-            boardServer.globalLeader[index].kills = boardServer.globalLeader[k].kills + v.kills
-            boardServer.globalLeader[index].avatarKills = boardServer.globalLeader[k].avatarKills + v.avatarKills
-            boardServer.globalLeader[index].deaths = boardServer.globalLeader[k].deaths + v.deaths
+        if k ~= nil and v ~= nil then
+            local index = tostring(k)
+            if index ~= nil then
+                if boardServer.globalLeader[index] == nil then
+                    boardServer.globalLeader[index] = {}
+                    boardServer.globalLeader[index].name = v.name
+                    boardServer.globalLeader[index].points = v.points
+                    boardServer.globalLeader[index].kills = v.kills
+                    boardServer.globalLeader[index].avatarKills = v.avatarKills
+                    boardServer.globalLeader[index].deaths = v.deaths
+                else
+                    boardServer.globalLeader[index].points = boardServer.globalLeader[k].points + v.points
+                    boardServer.globalLeader[index].kills = boardServer.globalLeader[k].kills + v.kills
+                    boardServer.globalLeader[index].avatarKills = boardServer.globalLeader[k].avatarKills + v.avatarKills
+                    boardServer.globalLeader[index].deaths = boardServer.globalLeader[k].deaths + v.deaths
+                end
+            end
         end
     end
     -- logger.log("step 3", boardServer)

@@ -115,7 +115,7 @@ end
 
 worldMeter.onHideMeter = function(arguments)
     logger.log('worldMeter.onHideMeter', arguments)
-    local hardGun = Space.Host.ExecutingObject.FindInChildren('fpsgun3rd')
+    local hardGun = Space.Host.ExecutingObject.Root.Avatar.GameObject.FindInChildren('fpsgun3rd')
     if hardGun ~= nil and hardGun.Alive then
         logger.log('found gun child')
         if worldMeter.gun ~= nil then
@@ -175,8 +175,11 @@ worldMeter.onHealthReceive = function(arguments)
     if worldMeter.worldPoints ~= nil then
         worldMeter.worldPoints.UIText.Text = tostring(data['points'])
     end
-    if not Space.Host.ExecutingObject.FindInChildren('fpsgun3rd') then
+    if not Space.Host.ExecutingObject.Root.Avatar.GameObject.FindInChildren('fpsgun3rd') then
         logger.log('worldMeter.onHealthReceive gun lost, resetting controller')
+        if worldMeter.guns == nil then
+            worldMeter.guns = {}
+        end
         worldMeter.guns[data.gunType] = {}
         -- if worldMeter.gun ~= nil then
         --     worldMeter.gun.Active = false
