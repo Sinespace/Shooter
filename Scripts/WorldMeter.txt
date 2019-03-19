@@ -180,13 +180,11 @@ worldMeter.onHealthReceive = function(arguments)
         if worldMeter.guns == nil then
             worldMeter.guns = {}
         end
-        worldMeter.guns[data.gunType] = {}
-        -- if worldMeter.gun ~= nil then
-        --     worldMeter.gun.Active = false
-        -- end
-        -- worldMeter.activeGun = nil
-        Space.Host.ExecutingObject.Root.Avatar.Skeleton.Animator.Controller = nil
-        worldMeter.activateGun(data)
+        if data ~= nil and data.gunType ~= nil and data.gunType ~= "" then
+            worldMeter.guns[data.gunType] = {}
+            Space.Host.ExecutingObject.Root.Avatar.Skeleton.Animator.Controller = nil
+            worldMeter.activateGun(data)
+        end
     elseif worldMeter.activeGun ~= data.gunType and data['health'] > 0 then
         worldMeter.activateGun(data)
     end
