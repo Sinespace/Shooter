@@ -35,6 +35,10 @@ koth.playerExit = function(hit)
     koth.sendServerMessage('leave', data)
 end
 
+koth.playerDied = function(data)
+    koth.playerExit('player died')
+end
+
 koth.sendRegistration = function()
     logger.log('koth.sendRegistration')
     local registration = {}
@@ -98,7 +102,7 @@ koth.updateGaugeAsync = function()
         elseif not koth.counting then
             koth.updateGauge(0)
         end
-        coroutine.yield(0)
+        coroutine.yield(0.15)
     end
 end
 
@@ -118,6 +122,8 @@ koth.init = function()
         Space.Network.SubscribeToNetwork(channel .. '.koth.reregister', koth.sendRegistration)
     end
     koth.sendRegistration()
+
+	Space.Shared.RegisterBroadcastFunction(channel .. '.' .. tostring(Space.Scene.PlayerAvatar.ID), 'died', koth.playerDied);
 
     Space.Host.StartCoroutine(koth.updateGaugeAsync, nil, 'koth.updateGaugeAsync')
 end

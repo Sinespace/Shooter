@@ -10,8 +10,15 @@ collisionDamage.handleCollision = function()
         collisionDamage.stats = Space.Shared.GetGlobal(channel, 'stats')
         logger.log('stats', collisionDamage.stats)
     end
+    if collisionDamage.stats == nil then
+        return
+    end
+    logger.log("handlecol damage", damage)
+    logger.log("handlecol collisionDamage", collisionDamage)
     while damage.dead == false and collisionDamage.colliding and collisionDamage.stats.health > 0 do
+        logger.log("counting collide")
         if damage.dead == false and Space.Time > collisionDamage.lastContact + collisionDamage.interval then
+            logger.log("counting collide 2")
             collisionDamage.lastContact = Space.Time
             collisionDamage.stats.health = collisionDamage.stats.health - collisionDamage.damage
             if collisionDamage.stats.health <= 0 then

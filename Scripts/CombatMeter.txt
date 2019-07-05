@@ -33,7 +33,13 @@ meter.healthBar = Space.Host.GetReference('healthBar').UIImage
 meter.respawn = Space.Host.GetReference('respawnPoint')
 
 meter.gunBarList = Space.Host.GetReference('gunBar')
+
+meter.teamTagRed = Space.Host.GetReference('teamTagRed')
+meter.teamTagBlue = Space.Host.GetReference('teamTagBlue')
+
 meter.gunBarTemplate = Space.GetResource('gunBarIcon')
+meter.defaultAnimator = Space.GetResource('animator')
+
 meter.gunBar = {}
 meter.sortedBar = {}
 
@@ -49,6 +55,10 @@ meter.availableDestinations = {}
 meter.team = ''
 meter.lastView = 0
 meter.currentAO = nil
+
+meter.sendUpdate = false
+meter.sendLeader = false
+meter.roundActive = false
 
 -- spawning distance round the safe zone center
 
@@ -86,6 +96,40 @@ meter.playTrigger = function(trigger)
     Space.Host.StartCoroutine(meter.doPlaytrigger, trigger, 'meter doPlayTrigger')
 end
 
+meter.postStats = function()
+    local data = {}
+    data['player'] = Space.Scene.PlayerAvatar.ID
+    data['health'] = stats.health
+    data['points'] = stats.points
+    data['kills'] = stats.kills
+    data['avatarKills'] = stats.avatarKills
+    data['gunType'] = stats.gunType
+    logger.log('sending health stats')
+    data['deaths'] = stats.deaths
+    data['command'] = 'board'
+    data['team'] = meter.team
+    data['name'] = Space.Scene.PlayerAvatar.Username
+    Space.Network.SendNetworkMessage(channel .. '.' .. tostring(Space.Scene.PlayerAvatar.ID) .. '.health', data, false)
+    if meter.sendLeader then
+        meter.sendLeader = false
+        Space.Network.SendNetworkMessage(channel .. '.health', data, true)
+    end
+    Space.Shared.CallBroadcastFunction(channel, 'health', {data})
+    if Space.InEditor then
+        Space.Shared.CallBroadcastFunction(channel, 'board', {data})
+    end
+end
+
+meter.updateSender = function()
+    while true do
+        if meter.sendUpdate then
+            meter.sendUpdate = false
+            meter.postStats()
+        end
+        coroutine.yield(0.2)
+    end
+end
+
 meter.updateMeter = function()
     meter.testStats()
     if stats.bulletType == nil or stats.bulletType == '' then
@@ -121,28 +165,13 @@ meter.updateMeter = function()
             meter.lastAvatarKills ~= stats.avatarKills or
             meter.lastPoints ~= stats.points
      then
-        local data = {}
-        data['player'] = Space.Scene.PlayerAvatar.ID
-        data['health'] = stats.health
-        data['points'] = stats.points
-        data['kills'] = stats.kills
-        data['avatarKills'] = stats.avatarKills
-        data['gunType'] = stats.gunType
-        logger.log('sending health stats')
-        Space.Network.SendNetworkMessage(
-            channel .. '.' .. tostring(Space.Scene.PlayerAvatar.ID) .. '.health',
-            data,
-            false
-        )
-        data['deaths'] = stats.deaths
-        data['command'] = 'board'
-        data['name'] = Space.Scene.PlayerAvatar.Username
-        if Space.InEditor then
-            Space.Shared.CallBroadcastFunction(channel, 'board', {data})
-        else
-            Space.Network.SendNetworkMessage(channel .. '.board', data, true)
+        if
+            meter.lastKills ~= stats.lastKills or meter.lastAvatarKills ~= stats.avatarKills or
+                meter.lastPoints ~= stats.points
+         then
+            meter.sendLeader = true
         end
-        Space.Shared.CallBroadcastFunction(channel, 'health', {data})
+        meter.sendUpdate = true
         meter.lastHealth = stats.health
         meter.lastKills = stats.lastKills
         meter.lastAvatarKills = stats.avatarKills
@@ -161,7 +190,7 @@ meter.sortOrder = function(record1, record2)
 end
 
 meter.activateGun = function(index)
-    -- logger.log('meter.activateGun', index)
+    logger.log('meter.activateGun', index)
     if meter.sortedBar ~= nil and meter.sortedBar[index] ~= nil and meter.activeGun ~= index then
         logger.log('cleanup')
         for k, v in pairs(meter.gunBar) do
@@ -231,7 +260,9 @@ end
 meter.cloneWeapon = function(weapon)
     local result = {
         gun = weapon.gun,
+        gunInstance = weapon.gunInstance,
         gunMouselook = weapon.gunMouselook,
+        gunMouselookInstance = weapon.gunMouselookInstance,
         gunRemote = weapon.gunRemote,
         gunType = weapon.gunType,
         bulletType = weapon.bulletType,
@@ -246,34 +277,12 @@ end
 meter.handleGiveGun = function(gunData)
     -- logger.log('meter.handleGiveGun', gunData)
     for k, v in pairs(meter.gunBar) do
-        if v.gunType ~= gunData.gunType then
-            v.icon.LocalScale = Vector.New(1, 1, 1)
-            if v.gun ~= nil then
+        if v.gunType ~= gunData.gunType and v.gun ~= nil then
                 v.gun.Active = false
-            end
-            if v.gunMouse ~= nil then
                 v.gunMouse.Active = false
             v.icon.LocalScale = Vector.New(1, 1, 1)
             end
         end
-    end
-    coroutine.yield(0)
-    -- logger.log('checkign for existing gun')
-    if meter.gunBar[gunData.gunType] ~= nil then
-        -- logger.log('gun already in gunbar')
-        if meter.gunBar[gunData.gunType].gun == nil or not meter.gunBar[gunData.gunType].gun.Alive then
-            -- logger.log('cleanup 1')
-            meter.sortedBar[meter.gunBar[gunData.gunType].index].icon.Destroy()
-            meter.sortedBar[meter.gunBar[gunData.gunType].index] = nil
-            meter.gunBar[gunData.gunType] = nil
-        elseif meter.gunBar[gunData.gunType].gunMouse == nil or not meter.gunBar[gunData.gunType].gunMouse.Alive then
-            -- logger.log('cleanup 2')
-            meter.sortedBar[meter.gunBar[gunData.gunType].index].icon.Destroy()
-            meter.sortedBar[meter.gunBar[gunData.gunType].index] = nil
-            meter.gunBar[gunData.gunType] = nil
-        end
-    end
-    coroutine.yield(0)
     if meter.gunBar[gunData.gunType] == nil then
         -- logger.log('meter.handleGiveGun gunbar nil', gunData)
         local weapons = Space.Shared.GetGlobal(channel, 'weapons')
@@ -285,7 +294,12 @@ meter.handleGiveGun = function(gunData)
 
         local bone = Space.Scene.PlayerAvatar.FindBone('RightHand')
 
-        local instance = Space.Scene.CreateGameObject(weapon.gun)
+        local instance = weapon.gunInstance
+        if instance == nil then
+            instance = Space.Scene.CreateGameObject(weapon.gun)
+        end
+        -- local instance = weapon.gunInstance
+        Space.Scene.MarkObjectTemporary(instance)
         instance.LocalPosition = Vector.New(0, 0, 0)
         instance.Name = 'fps3rdgun'
 
@@ -304,18 +318,23 @@ meter.handleGiveGun = function(gunData)
 
         instance.Active = not Space.Input.MouseLook
         meter.gunBar[weapon.gunType].gun = instance
-        coroutine.yield(0)
+        -- coroutine.yield(0)
 
+        instance = weapon.gunMouselookInstance
+        if instance == nil then
         instance = Space.Scene.CreateGameObject(weapon.gunMouselook)
+        end
+        -- local instance = weapon.gunMouselookInstance
+        Space.Scene.MarkObjectTemporary(instance)
         instance.SetParent(Space.Camera.MainCamera, false)
         instance.LocalPosition = Vector.New(0, 0, 0)
         instance.LocalRotation = Quaternion.New(0, 90, 0, 0)
         instance.Active = Space.Input.MouseLook
-        instance.Name = 'fpsmousegun'
         meter.gunBar[weapon.gunType].gunMouse = instance
 
-        coroutine.yield(0)
+        -- coroutine.yield(0)
         Space.Scene.PlayerAvatar.Skeleton.Animator.Controller = meter.gunBar[weapon.gunType].animator
+        coroutine.yield(0)
 
         stats.gunType = weapon.gunType
         stats.bulletType = weapon.bulletType
@@ -339,9 +358,10 @@ meter.handleGiveGun = function(gunData)
             data,
             false
         )
-        coroutine.yield(0)
+        -- coroutine.yield(0)
 
         meter.gunBar[weapon.gunType].icon = Space.Scene.CreateGameObject(meter.gunBarTemplate)
+        Space.Scene.MarkObjectTemporary(meter.gunBar[weapon.gunType].icon)
         meter.gunBar[weapon.gunType].icon.FindInChildren('Image').UIRawImage.Texture = weapon.gunBarIcon
         meter.gunBar[weapon.gunType].order = weapon.gunBarOrder
         meter.gunBar[weapon.gunType].bulletCount = meter.gunBar[weapon.gunType].icon.FindInChildren('Bullets').UIText
@@ -349,7 +369,7 @@ meter.handleGiveGun = function(gunData)
 
         Space.Host.StartCoroutine(meter.refreshGunBar, weapon.gunType, 'meter.refreshGunBar')
 
-        coroutine.yield(0)
+        -- coroutine.yield(0)
         meter.updateMeter()
     else
         -- logger.log('meter.handleGiveGun gunbar not nil')
@@ -418,11 +438,11 @@ end
 meter.takeNetworkHit = function(message)
     logger.log('meter.takeNetworkHit', message)
     local data = message.Message
-    if data['damage'] ~= nil then
+    if data['damage'] ~= nil and data['player'] ~= nil then
         -- logger.log('got damage message')
         -- logger.log('meter', meter)
         -- logger.log('stats', stats)
-        if meter.safe == false and stats.health > 0 then
+        if data['player'] == Space.Scene.PlayerAvatar.ID and meter.safe == false and stats.health > 0 then
             logger.log('take network hit', data)
             stats.health = stats.health - data['damage']
             meter.updateMeter()
@@ -437,10 +457,35 @@ meter.takeNetworkHit = function(message)
     end
 end
 
-meter.onSpawnerToggle = function(arguments)
-    logger.log('meter.onSpawnerToggle', arguments)
-    local data = arguments.Message
-    Space.Shared.SetGlobal(channel, 'spawnerDisabled', data.state)
+meter.takeNetworkHitBatch = function(message)
+    logger.log('meter.takeNetworkHit', message)
+    local data = message.Message
+    for i = 1, #data, 1 do
+        if data[i].hittype == 'player' then
+            meter.takeLocalHit(data[i])
+        end
+    end
+end
+
+meter.takeLocalHit = function(data)
+    logger.log('meter.takeLocalHit', data)
+    if data['damage'] ~= nil and data['player'] ~= nil then
+        -- logger.log('got damage message')
+        -- logger.log('meter', meter)
+        -- logger.log('stats', stats)
+        if data['player'] == Space.Scene.PlayerAvatar.ID and meter.safe == false and stats.health > 0 then
+            logger.log('take hit', data)
+            stats.health = stats.health - data['damage']
+            meter.updateMeter()
+            if stats.health <= 0 then
+                stats.health = 0
+                meter.die(data)
+            else
+                meter.playTrigger('Damage')
+                Space.Host.InvokeEvent('damage')
+            end
+        end
+    end
 end
 
 meter.onAvatarKilled = function(arguments)
@@ -464,12 +509,24 @@ meter.onGetPoints = function(arguments)
     meter.addPoints(data)
 end
 
+meter.setTeam = function(data)
+    meter.team = data.team
+    if data.team == 'red' then
+        meter.teamTagRed.Active = true
+        meter.teamTagBlue.Active = false
+    elseif data.team == 'blue' then
+        meter.teamTagRed.Active = false
+        meter.teamTagBlue.Active = true
+    else
+        meter.teamTagRed.Active = false
+        meter.teamTagBlue.Active = false
+    end
+end
+
 meter.onRecieve = function(arguments)
     logger.log('meter.onRecieve', arguments)
     local data = arguments.Message
-    if data.command == 'spawnerToggle' then
-        Space.Shared.SetGlobal(channel, 'spawnerDisabled', data.state)
-    elseif data.command == 'avatarKill' and data.shooter == Space.Scene.PlayerAvatar.ID then
+    if data.command == 'avatarKill' and data.shooter == Space.Scene.PlayerAvatar.ID then
         stats.avatarKills = stats.avatarKills + 1
         Space.Host.InvokeEvent('avatarKill')
         meter.updateMeter()
@@ -491,6 +548,7 @@ meter.damage = function(arguments)
 end
 
 meter.doDie = function(hitData)
+    if not meter.dead then
     logger.log('meter.doDie', hitData)
     meter.dead = true
     Space.Host.InvokeEvent('die')
@@ -501,9 +559,12 @@ meter.doDie = function(hitData)
     stats.health = 0
     stats.gunType = nil
     stats.bulletType = nil
+        Space.Shared.CallBroadcastFunction(channel .. '.' .. tostring(Space.Scene.PlayerAvatar.ID), 'died', {hitData})
     logger.log('dieing')
     Space.Input.MouseLook = false
+        logger.log('invoking delayed respawn')
     Space.Host.InvokeDelayed(meter.respawnAtLandingzone, meter.deathSequenceDuration)
+        logger.log('invoking delayed respawn end')
     Space.Host.StartCoroutine(meter.clearGunBar, nil, 'meter.clearGunBar')
     meter.updateMeter()
     if hitData ~= nil then
@@ -527,26 +588,19 @@ meter.doDie = function(hitData)
         end
     end
     logger.log('meter.doDie complete')
+    end
 end
 
 meter.die = function(hitData)
     logger.log('meter.die', hitData)
-    if meter.dead == false then
+    if not meter.dead then
         Space.Host.StartCoroutine(meter.doDie, hitData, 'meter.doDie')
     end
 end
 
-meter.toggleSpawner = function()
-    local state = Space.Host.GetReference('spawnerToggle').UIToggle.IsOn
-    Space.Shared.SetGlobal(channel, 'spawnerDisabled', state)
-    local data = {}
-    data.command = 'spawnerToggle'
-    data.state = state
-    Space.Network.SendNetworkMessage(channel .. '.spawnerToggle', data, false)
-end
-
 meter.startRound = function(data)
     logger.log('meter.startRound', data)
+    meter.roundActive = true
     meter.dead = true
     stats.kills = 0
     stats.avatarKills = 0
@@ -561,10 +615,13 @@ meter.startRound = function(data)
     meter.respawnAtLandingzone()
     Space.Host.InvokeEvent('startRound')
     Space.Host.InvokeDelayed(meter.clearRoundInfo, 2)
+    Space.Shared.CallBroadcastFunction(channel, 'round started', {})
 end
 
 meter.endRound = function(data)
     logger.log('meter.endRound', data)
+    meter.postStats()
+    meter.roundActive = false
     meter.dead = true
     stats.health = 0
     stats.gunType = nil
@@ -573,26 +630,50 @@ meter.endRound = function(data)
     meter.updateMeter()
     meter.respawnAtLandingzone()
     Space.Host.InvokeEvent('endRound')
-    Space.Host.InvokeDelayed(meter.clearRoundInfo, 2)
+    Space.Host.InvokeDelayed(meter.clearRoundOverlay, 2)
+    Space.Shared.CallBroadcastFunction(channel, 'round ended', {})
 end
 
-meter.clearRoundInfo = function()
+meter.clearRoundOverlay = function()
     Space.Host.InvokeEvent('clearRound')
 end
 
+meter.clearRoundInfo = function()
+    meter.clearRoundOverlay()
+    if meter.safe then
+        meter.leaveSafeTeleport()
+    end
+end
+
+meter.forceRespawnClient = function(data)
+    logger.log('meter.forceRespawnClient', data)
+    meter.roundActive = false
+    meter.dead = true
+    stats.health = 0
+    stats.gunType = nil
+    stats.bulletType = nil
+    Space.Host.StartCoroutine(meter.clearGunBar, nil, 'meter.clearGunBar')
+    meter.updateMeter()
+    meter.respawnAtLandingzone()
+    Space.Host.InvokeEvent('endRound')
+    Space.Host.InvokeDelayed(meter.clearRoundOverlay, 2)
+    Space.Shared.CallBroadcastFunction(channel, 'round ended', {})
+end
+
 meter.respawnAtLandingzone = function()
+    logger.log('meter.respawnAtLandingzone')
     stats.bullets = {}
     stats.health = stats.startHealth
     -- local offX = math.random(10) - 5
     -- local offZ = math.random(10) - 5
     -- local offset = Vector.New(offX, 2, offZ)
-    if stats.gun ~= nil then
-        stats.gun.Active = false
+    if stats.gun ~= nil and stats.gun.Alive then
+        logger.log('removing gun')
         stats.gun.Destroy()
         stats.gun = nil
     end
-    if stats.gunMouse ~= nil then
-        stats.gunMouse.Active = false
+    if stats.gunMouse ~= nil and stats.gunMouse.Alive then
+        logger.log('removing mouselook gun')
         stats.gunMouse.Destroy()
         stats.gunMouse = nil
     end
@@ -647,7 +728,7 @@ meter.enterSafe = function()
     Space.Input.MouseLook = false
     if Space.Scene.PlayerAvatar.Skeleton ~= nil then
         logger.log('meter.enterSafe skeleton')
-        Space.Scene.PlayerAvatar.Skeleton.Animator.Controller = nil
+        Space.Scene.PlayerAvatar.Skeleton.Animator.Controller = meter.defaultAnimator
     end
 end
 
@@ -669,13 +750,21 @@ meter.endTeleportEffect = function()
     Space.Host.InvokeEvent('teleportEnd')
 end
 
+meter.noRoundWarningClear = function()
+    Space.Host.InvokeEvent('noRoundWarningClear')
+end
+
+meter.noTeamTeleportClear = function()
+    Space.Host.InvokeEvent('noTeamTeleportClear')
+end
+
 meter.leaveSafeTeleport = function()
     -- logger.log('meter.leaveSafeTeleport')
     local points = Space.Shared.GetGlobal(channel, 'spawnpoints') or {}
     meter.availableDestinations = {}
     for i = 1, #points, 1 do
         local point = points[i]
-        if (point.team == meter.team or point.team == '') then
+        if point.team == meter.team or point.team == '' then
             if point.object.Alive then
                 meter.availableDestinations[#meter.availableDestinations + 1] = point
             end
@@ -721,12 +810,13 @@ meter.OnUpdate = function()
                 meter.activateGun(7)
             elseif Space.Input.GetKeyDown('8') and meter.activeGun ~= 8 then
                 meter.activateGun(8)
-            elseif Space.Input.GetKeyDown('r') then
-                meter.onAvatarReload()
             end
         end
     end
+end
 
+meter.ensureGun = function()
+    while true do
     if not meter.safe and not meter.dead and stats.gunType ~= nil and stats.gunType ~= '' then
         if meter.gunBar[stats.gunType] ~= nil then
             if Space.Input.MouseLook and meter.lastView ~= 2 then
@@ -755,19 +845,25 @@ meter.OnUpdate = function()
                 end
             end
         end
-    elseif not meter.safe and not meter.dead and stats.gunType ~= nil and stats.gunType ~= '' then
+        elseif not meter.safe and not meter.dead and (stats.gunType == nil or stats.gunType == '') then
         if meter.gunBar[stats.gunType] ~= nil then
             local gun = meter.gunBar[stats.gunType].gun
             local gunMouse = meter.gunBar[stats.gunType].gunMouse
             logger.log('meter.handleView ')
             if gun ~= nil then
+                    if gun.Active then
                 gun.Active = false
             end
+                end
             if gunMouse ~= nil then
+                    if gunMouse.Active then
                 gunMouse.Active = false
             end
+                end
             logger.log('meter.handleView end')
         end
+    end
+        coroutine.yield(0.25)
     end
 end
 
@@ -780,46 +876,31 @@ meter.handleServerBroadcast = function(data)
     if data.command == 'addPoints' then
         stats.points = stats.points + data.points
         meter.updateMeter()
-    elseif data.command == 'spawnerToggle' then
-        Space.Shared.SetGlobal(channel, 'spawnerDisabled', data.state)
     end
 end
 
 meter.killBot = function(data)
     logger.log('meter.killBot', data)
+    if data.countAsKill then
     stats.kills = stats.kills + 1
     Space.Host.InvokeEvent('npcKill')
     meter.updateMeter()
+    end
 end
+
 
 meter.onAvatarReload = function()
     logger.log('meter.onAvatarReload')
-    if stats.gunType ~= nil and stats.gunType ~= '' then
+    if stats.gunType ~= nil and stats.gunType ~= '' and not meter.reloading then
         local gunData = {gunType = stats.gunType}
         Space.Host.StartCoroutine(meter.handleGiveGun, gunData, 'onAvatarReload handleGiveGun')
-        Space.Network.SendNetworkMessage(
-            channel .. '.' .. tostring(Space.Scene.PlayerAvatar.ID) .. '.avatarReload',
-            gunData,
-            false
-        )
     end
 end
 
 meter.healthInitializer = function()
     while true do
-        if not meter.dead then
-            local data = {}
-            data['player'] = Space.Scene.PlayerAvatar.ID
-            data['health'] = stats.health
-            data['points'] = stats.points
-            data['kills'] = stats.kills
-            data['avatarKills'] = stats.avatarKills
-            data['gunType'] = stats.gunType
-            Space.Network.SendNetworkMessage(
-                channel .. '.' .. tostring(Space.Scene.PlayerAvatar.ID) .. '.health',
-                data,
-                false
-            )
+        if not meter.dead and not meter.sendUpdate then
+            meter.sendUpdate = true
         end
         coroutine.yield(2)
     end
@@ -827,17 +908,26 @@ end
 
 meter.updateMeterLogger = function()
     logger.log('remote update meter call')
-    meter.updateMeter()
+    Space.Host.StartCoroutine(meter.updateMeter, nil, 'meter.updateMeter')
 end
 
 meter.onDummyReceive = function(arguments)
     logger.log('meter.onDummyReceive', arguments)
 end
 
+meter.updateSettings = function(data)
+    local tmp = {}
+    tmp.team = ''
+    meter.setTeam(tmp)
+end
+
 meter.init = function()
     if meter.isInit == false then
+        -- Space.UI.ShowUI = true
         -- Space.Host.StartCoroutine(meter.handleView, nil, "meter.handleView")
         meter.isInit = true
+
+        Space.Input.ClickToWalk = false
 
         meter.userChannel = channel .. '.' .. tostring(Space.Scene.PlayerAvatar.ID)
         logger.log('userChannel', meter.userChannel)
@@ -849,11 +939,15 @@ meter.init = function()
         Space.Shared.RegisterFunction(channel, 'die', meter.die)
         Space.Shared.RegisterFunction(channel, 'damage', meter.damage)
         Space.Shared.RegisterFunction(channel, 'points', meter.addPoints)
+        Space.Shared.RegisterBroadcastFunction(channel, 'setTeam', meter.setTeam)
 
         Space.Shared.RegisterFunction(channel, 'endRound', meter.endRound)
+        Space.Shared.RegisterFunction(channel, 'forceRespawnClient', meter.forceRespawnClient)
         Space.Shared.RegisterFunction(channel, 'startRound', meter.startRound)
 
         Space.Shared.RegisterBroadcastFunction(channel, 'killbot', meter.killBot)
+
+        Space.Shared.RegisterBroadcastFunction(channel, 'updateSettings', meter.updateSettings)
 
         logger.log('setting stats', stats)
         Space.Shared.SetGlobal(channel, 'stats', stats)
@@ -861,9 +955,10 @@ meter.init = function()
 
         Space.Network.SubscribeToNetwork(channel, meter.onDummyReceive)
 
-        Space.Network.SubscribeToNetwork(channel .. '.spawnerToggle', meter.onSpawnerToggle)
+        Space.Shared.RegisterFunction(meter.userChannel, 'hit', meter.takeLocalHit)
+        Space.Network.SubscribeToNetwork(channel .. '.hit', meter.takeNetworkHit)
 
-        Space.Network.SubscribeToNetwork(meter.userChannel .. '.hit', meter.takeNetworkHit)
+        Space.Network.SubscribeToNetwork(channel .. '.hitbatch', meter.takeNetworkHitBatch)
 
         Space.Network.SubscribeToNetwork(meter.userChannel .. '.avatarKilled', meter.onAvatarKilled)
 
@@ -880,11 +975,20 @@ meter.init = function()
         end
 
         Space.Host.ExecutingObject.OnUpdate(meter.OnUpdate)
+        Space.Host.StartCoroutine(meter.ensureGun, nil, 'meter.ensureGun')
         Space.Host.StartCoroutine(meter.healthInitializer, nil, 'meter.healthInitializer')
+        Space.Host.StartCoroutine(meter.updateSender, nil, 'meter.updateSender')
 
         Space.Scene.PlayerAvatar.OnAvatarReload(meter.onAvatarReload)
 
+        local childs = meter.gunBarList.Children
+        for i = 1, #childs, 1 do
+            childs[i].Destroy()
+        end
+
         meter.spawnAtLandingzone()
+
+        Space.Scene.PlayerAvatar.Skeleton.Animator.Controller = meter.defaultAnimator
     else
         meter.testStats()
     end
@@ -908,12 +1012,4 @@ end
 
 function meterLeaveSaveTeleport()
     meter.leaveSafeTeleport()
-end
-
-function spawnerToggle()
-    meter.toggleSpawner()
-end
-
-function avatarReload()
-    meter.onAvatarReload()
 end

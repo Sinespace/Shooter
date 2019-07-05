@@ -41,6 +41,7 @@ npcSpawner.poolManager = function()
     local botnames = {}
     for i = 1, npcSpawner.poolSize, 1 do
         local tmp = Space.Scene.CreateGameObject(npcSpawner.npc)
+        Space.Scene.MarkObjectTemporary(tmp)
         tmp.Active = false
         tmp.Name = 'bot_' .. Space.String.GenerateGUID()
         local item = {}
@@ -83,7 +84,7 @@ end
 npcSpawner.handleMessage = function(data)
     logger.log('handleMessage got data', data, true)
     if data['command'] == 'spawn' then
-        Space.Host.StartCoroutine(npcSpawner.rezNpc, data)
+        Space.Host.StartCoroutine(npcSpawner.rezNpc, data, nil, "npcSpawner.rezNpc")
     elseif data['command'] == 'reregister' then
         local botnames = {}
         for i = 1, npcSpawner.poolSize, 1 do
@@ -100,6 +101,7 @@ npcSpawner.handleMessage = function(data)
         npcSpawner.npcPool = {}
         for i = 1, #botnames, 1 do
             local tmp = Space.Scene.CreateGameObject(npcSpawner.npc)
+            Space.Scene.MarkObjectTemporary(tmp)
             tmp.Active = true
             tmp.Name = botnames[i]
             local item = {}
@@ -220,9 +222,9 @@ npcSpawner.init = function()
     -- Space.Host.StartCoroutine(npcSpawner.spawn)
     -- Space.Host.InvokeDelayed(npcSpawner.register, 0.1)
 
-    Space.Host.StartCoroutine(npcSpawner.poolManager)
+    Space.Host.StartCoroutine(npcSpawner.poolManager, nil, "npcSpawner.poolManager")
     Space.Shared.RegisterBroadcastFunction(channel, 'killbot', npcSpawner.killBot)
 end
 
-logger.enabled = true
+logger.enabled = false
 npcSpawner.init()

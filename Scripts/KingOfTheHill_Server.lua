@@ -249,5 +249,7 @@ function OnScriptServerMessage(channel, arguments)
     end
 end
 
-logger.enabled = false
+
+logger.enabled = true
+
 kothServer.init()

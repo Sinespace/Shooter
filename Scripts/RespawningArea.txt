@@ -4,8 +4,6 @@ respawningArea = {}
 respawningArea.safeRange = safeRange or 5
 logger = logger or {}
 
-respawningArea.attachedHuds = {}
-
 respawningArea.attachWorldHudCoroutine = function()
     logger.log('starting hud watching coroutine')
     while true do
@@ -14,52 +12,53 @@ respawningArea.attachWorldHudCoroutine = function()
         for i = 1, #avatars, 1 do
             local avatar = avatars[i]
             if avatar ~= nil then
-                if respawningArea.attachedHuds == nil then
-                    respawningArea.attachedHuds = {}
-                end
-                if avatar.ID ~= Space.Scene.PlayerAvatar.ID then
-                    if respawningArea.attachedHuds[avatar.Username] == nil then
-                        respawningArea.attachedHuds[avatar.Username] = {}
+                if
+                    avatar.ID ~= Space.Scene.PlayerAvatar.ID and avatar.Username ~= nil and avatar.Username ~= '' and
+                        avatar.Loaded
+                 then
+                    local foundHud = avatar.GameObject.GetScriptInChildren('FPS-WORLDMETER')
+                    if foundHud ~= nil then
+                        if not foundHud.GameObject.Alive then
+                            logger.log('found dead worldmeter object')
+                            foundHud.GameObject.Alive.Destroy()
+                            foundHud = nil
+                            coroutine.yield(0)
+                        end
+                    end
+                    if foundHud == nil then
                         logger.log('found unknown user, attaching hud', avatar.Username)
                         local hud = Space.GetResource('worldmeter')
                         local worldHud = Space.Scene.CreateGameObject(hud)
+                        Space.Scene.MarkObjectTemporary(worldHud)
+                        worldHud.LocalPosition = Vector.New(0, 0.4, 0)
                         worldHud.SetParent(avatar.GameObject, false)
-                        worldHud.Active = true
-                        respawningArea.attachedHuds[avatar.Username].hud = worldHud
                         coroutine.yield(0)
+                        local fps = worldHud.GetScript('FPS-WORLDMETER')
+                        fps.SetPublicVariable('safeZone', tostring(Space.Host.ExecutingObject.WorldPosition), false)
+                        fps.SetPublicVariable('safeDistance', tostring(respawningArea.safeRange), false)
+                        worldHud.Active = true
+                    end
 
-                        local dist = avatar.GameObject.WorldPosition.Distance(Space.Host.ExecutingObject.WorldPosition)
-                        if dist > respawningArea.safeRange then
-                            local data = {}
-                            data.command = 'showMeter'
-                            data.avatar = avatar.ID
-                            Space.Shared.CallFunction(channel .. '.' .. tostring(avatar.ID), 'showMeter', {})
+                    local foundCollider = avatar.GameObject.GetScriptInChildren('FPS-HEADCOLLIDER')
+                    if foundCollider ~= nil then
+                        if not foundCollider.GameObject.Alive then
+                            logger.log('found dead headcollider object')
+                            foundCollider.GameObject.Alive.Destroy()
+                            foundCollider = nil
+                            coroutine.yield(0)
                         end
-                    elseif not avatar.GameObject.Alive then
-                        logger.log(
-                            'respawningArea.attachWorldHudCoroutine avatars list - removing avatar gameobject not alive',
-                            avatar
-                        )
-                        respawningArea.attachedHuds[avatar.Username] = nil
+                    end
+
+                    if foundCollider == nil then
+                        local head = Space.GetResource('headcollider')
+                        local worldHead = Space.Scene.CreateGameObject(head)
+                        Space.Scene.MarkObjectTemporary(worldHead)
+                        local bone = avatar.FindBone('Head')
+                        worldHead.SetParent(bone, false)
+                        worldHead.LocalPosition = Vector.New(0, 0.1, 0)
+                        worldHead.Active = true
                     end
                 end
-            end
-        end
-        for k, v in pairs(respawningArea.attachedHuds) do
-            local found = false
-            for i = 1, #avatars, 1 do
-                if avatars[i].Username == k and avatars[i].GameObject.Alive then
-                    found = true
-                elseif not avatars[i].GameObject.Alive then
-                    logger.log(
-                        'respawningArea.attachWorldHudCoroutine hud list -  removing avatar gameobject not alive',
-                        avatars[i]
-                    )
-                    respawningArea.attachedHuds[avatars[i].Username] = nil
-                end
-            end
-            if not found then
-                respawningArea.attachedHuds = nil
             end
         end
         coroutine.yield(2)
@@ -68,7 +67,7 @@ end
 
 respawningArea.init = function()
     logger.log('Initializing respawningArea')
-    Space.Host.StartCoroutine(respawningArea.attachWorldHudCoroutine)
+    Space.Host.StartCoroutine(respawningArea.attachWorldHudCoroutine, nil, 'respawningArea.attachWorldHudCoroutine')
 end
 
 -- if Space.InEditor then

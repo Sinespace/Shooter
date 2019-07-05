@@ -298,6 +298,4 @@ function OnAvatarLeave(avatarId)
     boardServer.avatarSceneLeave(avatarId)
 end
 
-logger.enabled = false
-
 boardServer.init()

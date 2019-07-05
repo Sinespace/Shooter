@@ -8,28 +8,41 @@ bulletCrate.next = 0
 
 logger = logger or {}
 
-bulletCrate.tryGive = function(playAnim)
-    logger.log('trying to give bullets, checking time')
+bulletCrate.tryGive = function(playAnim, immediate)
+    logger.log('trying to give bullets, checking time', bulletCrate.next)
     if bulletCrate.next < Space.Time then
-        bulletCrate.give(playAnim)
+        bulletCrate.give(playAnim, immediate)
     end
 end
 
-bulletCrate.give = function(playAnim)
-    Space.Host.StartCoroutine(bulletCrate.doGive, playAnim, "BulletCrate give")
+bulletCrate.give = function(playAnim, immediate)
+    local data = {}
+    data.playAnim = playAnim
+    data.immediate = immediate
+    Space.Host.StartCoroutine(bulletCrate.doGive, data, "BulletCrate give")
 end
 
-bulletCrate.doGive = function(playAnim)
-    logger.log('Giving bullets')
+bulletCrate.doGive = function(input)
     bulletCrate.next = Space.Time + bulletCrate.interval
     local data = {}
     data.bullets = bulletCrate.bullets
     data.bulletType = bulletCrate.bulletType
-    data.playAnimation = playAnim or true
+    data.playAnimation = input.playAnim or true
+
     Space.Shared.CallFunction(channel, 'giveBullets', {data})
+end
+
+bulletCrate.reset = function(data)
+	bulletCrate.next = 0;
+end
+
+bulletCrate.init = function()
+	Space.Shared.RegisterBroadcastFunction(channel, 'round ended', bulletCrate.reset);
+	Space.Shared.RegisterBroadcastFunction(channel .. '.' .. tostring(Space.Scene.PlayerAvatar.ID), 'died', bulletCrate.reset);
 end
 
 function bulletCrateTryGive()
     logger.log("bulletCrate data", bulletCrate)
-    bulletCrate.tryGive()
+    bulletCrate.tryGive(true, false)
 end
+bulletCrate.init();

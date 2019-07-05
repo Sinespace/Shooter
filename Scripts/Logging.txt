@@ -9,8 +9,6 @@ logger.log = function(logEntry, data, force)
     end
     if Space.Shared.GetGlobal(logger.channel, 'forceLogging') then
         force = true
-    else
-        force = force or false
     end
     if (logger.enabled or force) and globalEnabled then
         local payload = ''

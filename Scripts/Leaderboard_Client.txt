@@ -53,7 +53,9 @@ leaderboard.startRound = function()
 end
 
 leaderboard.handleBroadcast = function(data)
-    if data.command == 'updateBoard' then
+    if data == nil or data.command == nil then
+        return
+    elseif data.command == 'updateBoard' then
         logger.log('leaderboard.handleBroadcast', data)
         leaderboard.update(data)
     elseif data.command == 'startRound' then
@@ -149,7 +151,14 @@ function saveSettings()
 end
 
 function startRound()
+    logger.log("leaderboard startRound")
     leaderboard.startRound()
+end
+
+function resetAll()
+    leaderboard.settings.minPlayers = 0
+    leaderboard.settings.maxPoints = 2
+    leaderboard.settings.maxMinutes = 5
 end
 
 leaderboard.init()

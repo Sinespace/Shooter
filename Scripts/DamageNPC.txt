@@ -5,31 +5,57 @@ logger = logger or {}
 
 npcFollower = npcFollower or {hidden = false}
 
+npcFollower.countAsKill = (countAsKill or 0) == 1
+
+damage.respawnInterval = tonumber(respawnInterval or 0)
+damage.healingValue = tonumber(healingValue or 0)
+damage.healingInterval = tonumber(healingInterval or 0)
+damage.targetHeightOffset = tonumber(targetHeightOffset or 0)
+
 damage.playDamageAction = function()
     local deathMode = Space.Math.RandomInteger(1, damage.damageModes)
     Space.Host.InvokeEvent('damage')
+    if damage.animator ~= nil then
     damage.animator.SetInteger('DamageMode', deathMode)
     damage.animator.SetTrigger('TakeDamage')
+    end
 end
 
 damage.die = function()
     if damage.dead == false then
         damage.dead = true
         logger.log('busy dieing')
+        if Space.Host.ExecutingObject.NavMeshAgent ~= nil then
         if Space.Host.ExecutingObject.NavMeshAgent.HasPath and Space.Host.ExecutingObject.NavMeshAgent.Enabled then
             Space.Host.ExecutingObject.NavMeshAgent.Stop()
             Space.Host.ExecutingObject.NavMeshAgent.Enabled = false
         end
+        end
         Space.Host.InvokeEvent('die')
+        if damage.animator ~= nil then
         damage.animator.SetTrigger('Death')
+        end
         local deathMode = Space.Math.RandomInteger(1, damage.deathModes)
         logger.log('playing death mode', deathMode)
+        if damage.animator ~= nil then
         damage.animator.SetInteger('Die', deathMode)
+        end
         local kb = {}
         kb.command = 'killbot'
         kb.name = Space.Host.ExecutingObject.Name
         kb.mode = deathMode
+        kb.countAsKill = npcFollower.countAsKill
         Space.Shared.CallBroadcastFunction(channel, 'killbot', {kb})
+
+        if damage.respawnInterval > 0 then
+            Space.Host.InvokeDelayed(damage.autoRespawn, damage.respawnInterval)
+        end
+    end
+end
+
+damage.autoRespawn = function()
+    if damage.dead and npcReset ~= nil then
+        npcReset.restart()
     end
 end
 
@@ -39,10 +65,14 @@ damage.kill = function(data)
             damage.dead = true
             logger.log('busy dieing')
             Space.Host.InvokeEvent('die')
+            if damage.animator ~= nil then
             damage.animator.SetTrigger('Death')
+            end
             logger.log('playing death mode', data.mode)
+            if damage.animator ~= nil then
             damage.animator.SetInteger('Die', data.mode)
         end
+    end
     end
 end
 
@@ -51,18 +81,38 @@ damage.checkUpdateTitle = function()
 end
 
 damage.updateTitle = function()
-    -- local text = Space.Host.GetReference('health')
-    -- text.UIText.Text = tostring(damage.meter.health)
+    local text = Space.Host.GetReference('health')
+    if text ~= nil then
+        text.UIText.Text = tostring(damage.meter.health)
+    end
+    local healthAnim = Space.Host.GetReference('healthanimator')
+    if healthAnim ~= nil then
+        local level = 1 - (damage.meter.health / (startHealth or 50))
+        healthAnim.Animator.SetFloat('level', level)
+    end
 end
 
 damage.triggerSpawn = function()
     Space.Host.InvokeEvent('spawn')
 end
 
+damage.selfHeal = function()
+    while not damage.dead do
+        coroutine.yield(damage.healingInterval)
+        if damage.meter.health < (startHealth or 50) then
+            damage.meter.health = damage.meter.health + damage.healingValue
+            damage.updateTitle()
+        end
+    end
+end
 damage.npcSetup = function()
-    Space.Host.GetReference('healthParent').Active = false
+    local hp = Space.Host.GetReference('healthParent')
+    if hp ~= nil then
+        hp.Active = false
+    end
+    if Space.Host.GetReference('animator') ~= nil then
     damage.animator = Space.Host.GetReference('animator').Animator
-
+    end
     local hitChannel
     if Space.Host.ExecutingObject.Root.Avatar ~= nil then
         hitChannel = channel .. '.' .. tostring(Space.Scene.PlayerAvatar.ID)
@@ -79,29 +129,36 @@ damage.npcSetup = function()
 
     damage.index = (damage.index or 0) + 1
 
-    Space.Host.StartCoroutine(damage.updateHud, nil, "DamageNPC updateHud")
+    damage.targetHeightOffset = tonumber(targetHeightOffset or 0)
+    -- Space.Host.ExecutingObject.Script.SetPublicVariable("targetHeightOffset", tonumber(damage.targetHeightOffset), true)
 
+    Space.Host.StartCoroutine(damage.updateHud, nil, 'DamageNPC updateHud')
+    if damage.healingInterval > 0 and damage.healingValue > 0 then
+        Space.Host.StartCoroutine(damage.selfHeal, nil, 'Time-based self heal')
+    end
     Space.Host.InvokeDelayed(damage.triggerSpawn, 0.1)
     logger.log('processed damage setup ', damage)
 end
 
 damage.updateHud = function()
-    -- local randomOffset = math.random() * 0.1
-    -- local hud = Space.Host.GetReference('healthParent')
-    -- while not npcFollower.hidden do
-    --     local offset = Space.Host.ExecutingObject.WorldPosition - Space.Camera.MainCamera.WorldPosition
-    --     if offset.Magnitude > 15 then
-    --         if hud.Active then
-    --             hud.Active = false
-    --         end
-    --     else
-    --         if not hud.Active then
-    --             hud.Active = true
-    --         end
-    --         -- local scale = (offset.Magnitude / 15) * 2 + 1
-    --         -- hud.LocalScale = Vector.New(scale, scale, scale)
-    --         hud.WorldRotation = Quaternion.LookRotation(offset)
-    --     end
-    --     coroutine.yield(0.3 + randomOffset)
-    -- end
+    local randomOffset = math.random() * 0.1
+    local hud = Space.Host.GetReference('healthParent')
+    if hud ~= nil then
+        while not npcFollower.hidden do
+            local offset = Space.Host.ExecutingObject.WorldPosition - Space.Camera.MainCamera.WorldPosition
+            if offset.Magnitude > 15 then
+                if hud.Active then
+                    hud.Active = false
+                end
+            else
+                if not hud.Active then
+                    hud.Active = true
+                end
+                -- local scale = (offset.Magnitude / 15) * 2 + 1
+                -- hud.LocalScale = Vector.New(scale, scale, scale)
+                hud.WorldRotation = Quaternion.LookRotation(offset)
+            end
+            coroutine.yield(0.3 + randomOffset)
+        end
+    end
 end

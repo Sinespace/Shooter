@@ -2529,7 +2529,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b37c65c4f04796841a3b04c8e7b38536, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ComponentName: 
+  ComponentName: FPS
   ScriptContents: 
   Script: {fileID: 0}
   PublicVariables:

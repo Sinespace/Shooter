@@ -11,6 +11,8 @@ npcFollower.attackSpeed = attackSpeed or 4
 npcFollower.wanderSpeed = wanderSpeed or 2
 npcFollower.meleeRange = meleeRange or 1
 
+npcFollower.countAsKill = (countAsKill or 1) == 1
+
 logger = logger or {}
 damage = damage or {}
 Vector = Vector or {}
@@ -80,7 +82,7 @@ npcFollower.checkAttack = function(posSelf, posTarget)
         if posSelf.Distance(posTarget) < npcFollower.attackRange then
             -- logger.log('Starting attack mode!')
             Space.Host.InvokeEvent('attack')
-            if Space.Host.GetReference('animator').Animator ~= nil then
+            if Space.Host.GetReference('animator') ~= nil and Space.Host.GetReference('animator').Animator ~= nil then
                 npcFollower.currentAttack = Space.Math.RandomInteger(1, npcFollower.attackModes)
                 -- logger.log('attack mode', npcFollower.currentAttack)
                 Space.Host.GetReference('animator').Animator.SetBool('Attacking', true)
@@ -92,7 +94,7 @@ npcFollower.checkAttack = function(posSelf, posTarget)
             -- logger.log('Out of attack reach, ending attack mode')
             npcFollower.currentAttack = -1
             Space.Host.InvokeEvent('attackend')
-            if Space.Host.GetReference('animator').Animator ~= nil then
+            if Space.Host.GetReference('animator') ~= nil and Space.Host.GetReference('animator').Animator ~= nil then
                 Space.Host.GetReference('animator').Animator.SetBool('Attacking', false)
             end
         end
@@ -177,7 +179,7 @@ npcFollower.UpdateSpeed = function()
             else
                 agent.Speed = npcFollower.wanderSpeed
             end
-            if Space.Host.GetReference('animator').Animator ~= nil then
+            if Space.Host.GetReference('animator') ~= nil and Space.Host.GetReference('animator').Animator ~= nil then
                 Space.Host.GetReference('animator').Animator.SetFloat('Speed', agent.Velocity.Magnitude / agent.Speed)
             end
         -- else
@@ -219,7 +221,7 @@ npcFollower.setup = function()
     -- animator.Controller = nil;
     -- animator.Controller = backup;
 
-    if Space.Host.GetReference('animator').Animator ~= nil then
+    if Space.Host.GetReference('animator') ~= nil and Space.Host.GetReference('animator').Animator ~= nil then
         Space.Host.GetReference('animator').Animator.SetBool('Attacking', false)
     end
     -- logger.log('processed npc follower setup ', npcFollower)

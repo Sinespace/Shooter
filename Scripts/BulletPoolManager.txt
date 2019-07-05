@@ -18,6 +18,7 @@ poolManager.poolBullet = function(type, position, bullet)
         -- local bullet = Space.GetResource(type)
         for i = 1, poolManager.poolSize, 1 do
             local tmp = Space.Scene.CreateGameObject(bullet)
+            Space.Scene.MarkObjectTemporary(tmp)
             tmp.Active = false
             local item = {}
             item.bullet = tmp
@@ -44,6 +45,7 @@ poolManager.checkType = function(type, bullet)
         -- local bullet = Space.GetResource(type)
         for i = 1, poolManager.poolSize, 1 do
             local tmp = Space.Scene.CreateGameObject(bullet)
+            Space.Scene.MarkObjectTemporary(tmp)
             tmp.Active = false
             local item = {}
             item.bullet = tmp
@@ -71,7 +73,9 @@ end
 
 poolManager.handleMessage = function(data)
     if data['command'] == 'bullet' then
+        if data['showHit'] == 1 then
         poolManager.poolBullet(data['type'], data['position'], data['bullet'])
+        end
     elseif data['command'] == 'check' then
         poolManager.checkType(data['type'], data['bullet'])
     end
@@ -82,11 +86,23 @@ poolManager.onNetworkRecieve = function(arguments)
     poolManager.handleMessage(data)
 end
 
+poolManager.takeNetworkHitBatch = function(message)
+    logger.log('meter.takeNetworkHit', message)
+    local data = message.Message
+    for i = 1, #data, 1 do
+        poolManager.handleMessage(data[i])
+    end
+end
+
 poolManager.init = function()
-    Space.Host.StartCoroutine(poolManager.poolManager, nil, "BulletPoolManager poolManager")
-    Space.Shared.RegisterBroadcastFunction(channel, 'rezBullet', poolManager.handleMessage)
-    Space.Network.SubscribeToNetwork(channel .. '.rezBullet', poolManager.onNetworkRecieve)
-    Space.Shared.CallBroadcastFunction(channel, "queryBullets", {})
+    Space.Host.StartCoroutine(poolManager.poolManager, nil, 'BulletPoolManager poolManager')
+    Space.Shared.RegisterBroadcastFunction(channel .. '.bullets', 'hit', poolManager.handleMessage)
+    Space.Shared.RegisterBroadcastFunction(channel .. '.bullets', 'check', poolManager.handleMessage)
+    Space.Network.SubscribeToNetwork(channel .. '.hit', poolManager.onNetworkRecieve)
+
+    Space.Network.SubscribeToNetwork(channel .. '.hitbatch', poolManager.takeNetworkHitBatch)
+
+    Space.Shared.CallBroadcastFunction(channel, 'queryBullets', {})
 end
 
 poolManager.init()

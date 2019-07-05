@@ -39,6 +39,7 @@ npcSpawner.rezNpc = function(position)
 end
 
 npcSpawner.poolManager = function()
+    logger.log('starting poolManager')
     local bots = {}
     for i = 1, npcSpawner.types, 1 do
         local resName = 'npc' .. tostring(i)
@@ -49,6 +50,7 @@ npcSpawner.poolManager = function()
     local index = 1
     for i = 1, npcSpawner.poolSize * npcSpawner.types, 1 do
         tmp = Space.Scene.CreateGameObject(bots[index])
+        Space.Scene.MarkObjectTemporary(tmp)
         tmp.Active = true
         tmp.Name = 'bot_' .. Space.String.GenerateGUID()
         local item = {}
@@ -63,6 +65,11 @@ npcSpawner.poolManager = function()
         coroutine.yield(0)
     end
     npcSpawner.poolInit = true
+    logger.log('pool manager complete')
+    logger.log('npcSpawner starting spawn init')
+    Space.Host.StartCoroutine(npcSpawner.spawnLoop, nil, 'npcSpawner spawnLoop')
+
+    logger.log('npcSpawner starting monitoring')
     while true do
         for i = 1, npcSpawner.poolSize * npcSpawner.types, 1 do
             local item = npcSpawner.npcPool[i]
@@ -93,18 +100,13 @@ npcSpawner.getRandomPos = function()
 end
 
 npcSpawner.spawnLoop = function()
-    while not npcSpawner.poolInit do
-        coroutine.yield(0.5)
-    end
     local randomOffset = math.random() * 0.2
     while true do
-        if not Space.Shared.GetGlobal(channel, 'spawnerDisabled') then
-            if npcSpawner.nextTime < Space.Time and not npcSpawner.occluded then
-                npcSpawner.nextTime = Space.Time + npcSpawner.spawnInterval + math.random(10) - 5
-                local offset = npcSpawner.getRandomPos()
-                logger.log('offset', offset)
-                npcSpawner.rezNpc(Space.Host.ExecutingObject.WorldPosition + offset)
-            end
+        if npcSpawner.nextTime < Space.Time and not npcSpawner.occluded then
+            npcSpawner.nextTime = Space.Time + npcSpawner.spawnInterval + math.random(10) - 5
+            local offset = npcSpawner.getRandomPos()
+            logger.log('offset', offset)
+            npcSpawner.rezNpc(Space.Host.ExecutingObject.WorldPosition + offset)
         end
         coroutine.yield(0.9 + randomOffset)
     end
@@ -120,10 +122,9 @@ npcSpawner.killBot = function(data)
 end
 
 npcSpawner.init = function()
-    Space.Host.StartCoroutine(npcSpawner.poolManager, nil, "npcSpawner poolManager")
+    Space.Host.StartCoroutine(npcSpawner.poolManager, nil, 'npcSpawner poolManager')
     npcSpawner.nextTime = Space.Time + math.random(10)
     npcSpawner.showIndex = math.random(1, npcSpawner.types)
-    Space.Host.StartCoroutine(npcSpawner.spawnLoop, nil, "npcSpawner spawnLoop")
     Space.Shared.RegisterBroadcastFunction(channel, 'killbot', npcSpawner.killBot)
 
     -- Space.Host.ExecutingObject.OnTriggerStart(npcSpawner.enterCollider)
@@ -133,7 +134,6 @@ end
 npcSpawner.enterCollider = function()
     npcSpawner.inCollider = npcSpawner.inCollider + 1
     npcSpawner.occluded = not (npcSpawner.inCollider > 0)
-    logger.log("collider entered", npcSpawner)
 end
 
 npcSpawner.exitCollider = function()
@@ -142,17 +142,16 @@ npcSpawner.exitCollider = function()
         npcSpawner.inCollider = 0
     end
     npcSpawner.occluded = not (npcSpawner.inCollider > 0)
-    logger.log("collider exit", npcSpawner)
 end
 
 function enterCollider()
+    logger.log('collider entered', npcSpawner)
     npcSpawner.occluded = false
-    logger.log("collider entered", npcSpawner)
 end
 
 function exitCollider()
+    logger.log('collider exit', npcSpawner)
     npcSpawner.occluded = true
-    logger.log("collider exit", npcSpawner)
 end
 
 npcSpawner.init()
