@@ -96,8 +96,12 @@ meter.playTrigger = function(trigger)
     Space.Host.StartCoroutine(meter.doPlaytrigger, trigger, 'meter doPlayTrigger')
 end
 
+meter.seq = 0
+
 meter.postStats = function()
     local data = {}
+    meter.seq = meter.seq + 1
+    data["seq"] = meter.seq
     data['player'] = Space.Scene.PlayerAvatar.ID
     data['health'] = stats.health
     data['points'] = stats.points
@@ -112,7 +116,7 @@ meter.postStats = function()
     Space.Network.SendNetworkMessage(channel .. '.' .. tostring(Space.Scene.PlayerAvatar.ID) .. '.health', data, false)
     if meter.sendLeader then
         meter.sendLeader = false
-        Space.Network.SendNetworkMessage(channel .. '.health', data, true)
+        Space.Network.SendNetworkMessage(channel .. '.board', data, true)
     end
     Space.Shared.CallBroadcastFunction(channel, 'health', {data})
     if Space.InEditor then

@@ -16,7 +16,7 @@ logger.log = function(logEntry, data)
                 payload = ' - ' .. tostring(data)
             end
         end
-        Space.Log(string.format('%09.4f', boardServer.getTime()) .. ' - SERVER - ' .. logEntry .. payload, true)
+        Space.Log(string.format('%09.4f', boardServer.getTime()) .. ' - LEADERBOARD - ' .. logEntry .. payload, true)
     end
 end
 
@@ -288,8 +288,8 @@ local function starts_with(str, start)
 end
 
 function OnScriptServerMessage(channel, arguments)
-    --logger.log('OnScriptServerMessage', {channel, arguments})
     if starts_with(channel, boardServer.channel .. '.board') then
+        logger.log('OnScriptServerMessage', {channel, arguments})
         boardServer.handleMessage(arguments)
     end
 end

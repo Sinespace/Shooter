@@ -16,7 +16,7 @@ logger.log = function(logEntry, data)
                 payload = ' - ' .. tostring(data)
             end
         end
-        Space.Log(string.format('%09.4f', kothServer.getTime()) .. ' - SERVER - ' .. logEntry .. payload, true)
+        Space.Log(string.format('%09.4f', kothServer.getTime()) .. ' - KOTH - ' .. logEntry .. payload, true)
     end
 end
 
@@ -243,13 +243,10 @@ local function starts_with(str, start)
 end
 
 function OnScriptServerMessage(channel, arguments)
-    logger.log('OnScriptServerMessage', {channel, arguments})
     if starts_with(channel, kothServer.channel .. '.koth') then
+        logger.log('OnScriptServerMessage', {channel, arguments})
         kothServer.handleMessage(arguments)
     end
 end
-
-
-logger.enabled = true
 
 kothServer.init()
