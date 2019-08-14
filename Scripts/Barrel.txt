@@ -10,6 +10,8 @@ gun.damageNpc = hitDamageNpc or 10
 gun.damagePlayer = hitDamagePlayer or 10
 gun.showHit = showHits or true
 gun.hitBatch = {}
+gun.nextSend = 0
+gun.batchInterval = 0.1
 --gun.modeFirst = false
 
 logger = logger or {}
@@ -62,15 +64,15 @@ gun.detect = function(startPos)
 end
 
 gun.batchSender = function()
-    while true do
+    logger.log('gun.batchSender hitBatch size monitor', gun.hitBatch)
         if #gun.hitBatch > 0 then
-            logger.log('gun.batchSender', gun.hitBatch)
+        logger.log('gun.batchSender in', gun.hitBatch)
+
             Space.Network.SendNetworkMessage(channel .. '.hitbatch', gun.hitBatch, false)
-            for k, v in pairs(gun.hitBatch) do
-                gun.hitBatch[k] = nil
-            end
-        end
-        coroutine.yield(0.1)
+
+        gun.hitBatch = {}
+
+        logger.log('gun.batchSender out', gun.hitBatch)
     end
 end
 
@@ -126,7 +128,7 @@ gun.fire = function()
                         Space.Shared.CallBroadcastFunction(channel .. '.bullets', 'hit', {data})
                         -- Space.Network.SendNetworkMessage(channel .. '.hit', data)
                         data.hittype = 'player'
-                        gun.hitBatch[#gun.hitBatch + 1] = data
+                        table.insert(gun.hitBatch, data)
                     -- coroutine.yield(0)
                     end
                 elseif not hit.Static then
@@ -145,7 +147,7 @@ gun.fire = function()
                     Space.Shared.CallBroadcastFunction(channel .. '.bullets', 'hit', {data})
                     -- Space.Network.SendNetworkMessage(channel .. '.hit', data, false)
                     data.hittype = 'npc'
-                    gun.hitBatch[#gun.hitBatch + 1] = data
+                    table.insert(gun.hitBatch, data)
                     logger.log('end hit NPC', gun.hitBatch)
                 elseif hit.Static and gun.showHit then
                     logger.log('sending hit', hit.Object.Root.Name)
@@ -162,7 +164,7 @@ gun.fire = function()
                     -- Space.Network.SendNetworkMessage(channel .. '.hit', hitData, false)
                     Space.Shared.CallBroadcastFunction(channel .. '.bullets', 'hit', {hitData})
                     hitData.hittype = 'bullets'
-                    gun.hitBatch[#gun.hitBatch + 1] = hitData
+                    table.insert(gun.hitBatch, hitData)
                 end
                 coroutine.yield(0)
             end
@@ -196,6 +198,10 @@ gun.onUpdate = function()
         -- else
         -- logger.log('no shots allowed')
         end
+    end
+    if gun.nextSend < Space.Time then
+        gun.batchSender()
+        gun.nextSend = Space.Time + gun.batchInterval
     end
 end
 
