@@ -1,2 +1,4 @@
 *.bak
 *.bak.meta
+*.code-workspace
+*.meta

@@ -787,7 +787,10 @@ meter.leaveSafeTeleport = function()
         Space.Host.InvokeEvent('teleportStart')
         Space.Host.InvokeDelayed(meter.endTeleportEffect, meter.teleportEffectDuration)
         -- logger.log('teleporting from safezone')
-        Space.Scene.PlayerAvatar.Teleport(dest.position + offset, dest.rotation)
+        -- Arrive with the spawn point rotation
+        -- Space.Scene.PlayerAvatar.Teleport(dest.position + offset, dest.rotation)
+        -- Always arrive vertically
+        Space.Scene.PlayerAvatar.Teleport(dest.position + offset, Quaternion.Euler(0.0, dest.rotation.EulerAngles.y, 0.0))
         meter.leaveSafe()
     else
         logger.log('no destination available')
