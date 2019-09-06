@@ -40,6 +40,8 @@ meter.teamTagBlue = Space.Host.GetReference('teamTagBlue')
 meter.gunBarTemplate = Space.GetResource('gunBarIcon')
 meter.defaultAnimator = Space.GetResource('animator')
 
+meter.playerHud = Space.Host.GetReference('playerHud')
+
 meter.gunBar = {}
 meter.sortedBar = {}
 
@@ -817,6 +819,8 @@ meter.OnUpdate = function()
                 meter.activateGun(7)
             elseif Space.Input.GetKeyDown('8') and meter.activeGun ~= 8 then
                 meter.activateGun(8)
+            elseif Space.Input.GetKeyDown('u') then
+                meter.playerHud.Active = not meter.playerHud.Active;
             end
         end
     end
